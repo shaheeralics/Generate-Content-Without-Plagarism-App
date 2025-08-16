@@ -25,6 +25,7 @@ st.markdown(
         background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
         font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
         color: #00ff88;
+        padding: 20px 0;
     }
     
     /* Futuristic container */
@@ -32,11 +33,12 @@ st.markdown(
         background: rgba(0, 0, 0, 0.8);
         border: 2px solid #00ff88;
         border-radius: 20px;
-        padding: 30px;
-        margin: 20px auto;
+        padding: 40px;
+        margin: 30px auto;
         max-width: 1200px;
         box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
         backdrop-filter: blur(10px);
+        min-height: 80vh;
     }
     
     /* Neon title */
@@ -45,7 +47,7 @@ st.markdown(
         text-align: center;
         color: #00ff88;
         text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 30px #00ff88;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         font-weight: bold;
         letter-spacing: 3px;
     }
@@ -54,11 +56,25 @@ st.markdown(
         text-align: center;
         color: #64ffda;
         font-size: 1.3em;
-        margin-bottom: 40px;
+        margin-bottom: 50px;
         opacity: 0.9;
     }
     
+    /* Section spacing */
+    .stMarkdown h3 {
+        margin-top: 30px !important;
+        margin-bottom: 20px !important;
+        color: #00ff88;
+        text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        border-bottom: 2px solid #00ff88;
+        padding-bottom: 10px;
+    }
+    
     /* Input styling */
+    .stTextInput {
+        margin: 20px 0 !important;
+    }
+    
     .stTextInput > div > div > input {
         background: rgba(0, 20, 40, 0.9);
         border: 2px solid #00ff88;
@@ -67,6 +83,7 @@ st.markdown(
         font-size: 16px;
         padding: 15px;
         font-family: 'Courier New', monospace;
+        margin: 10px 0;
     }
     
     .stTextInput > div > div > input:focus {
@@ -75,6 +92,10 @@ st.markdown(
     }
     
     /* Slider styling */
+    .stSlider {
+        margin: 25px 0 !important;
+        padding: 10px 0;
+    }
     .stSlider > div > div > div {
         background: linear-gradient(90deg, #00ff88, #64ffda);
     }
@@ -85,6 +106,11 @@ st.markdown(
     }
     
     /* Button styling */
+    .stButton {
+        margin: 30px 0 !important;
+        text-align: center;
+    }
+    
     .stButton > button {
         background: linear-gradient(45deg, #00ff88, #64ffda);
         color: #000;
@@ -96,6 +122,7 @@ st.markdown(
         box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
         transition: all 0.3s ease;
         font-family: 'Courier New', monospace;
+        margin: 10px 0;
     }
     
     .stButton > button:hover {
@@ -104,6 +131,10 @@ st.markdown(
     }
     
     /* Download button */
+    .stDownloadButton {
+        margin: 20px 0 !important;
+    }
+    
     .stDownloadButton > button {
         background: linear-gradient(45deg, #ff6b6b, #feca57);
         color: #000;
@@ -121,8 +152,8 @@ st.markdown(
         background: rgba(0, 255, 136, 0.1);
         border: 1px solid #00ff88;
         border-radius: 10px;
-        padding: 10px;
-        margin: 10px 0;
+        padding: 15px;
+        margin: 20px 0;
         color: #00ff88;
         font-family: 'Courier New', monospace;
     }
@@ -132,8 +163,8 @@ st.markdown(
         background: rgba(0, 20, 40, 0.8);
         border: 2px solid #64ffda;
         border-radius: 15px;
-        padding: 25px;
-        margin: 20px 0;
+        padding: 30px;
+        margin: 30px 0;
         box-shadow: 0 0 30px rgba(100, 255, 218, 0.2);
     }
     
@@ -142,6 +173,7 @@ st.markdown(
         color: #e0e0e0;
         font-family: 'Georgia', serif;
         line-height: 1.8;
+        margin: 15px 0 !important;
     }
     
     .stMarkdown h3 {
@@ -149,11 +181,27 @@ st.markdown(
         text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
         border-bottom: 2px solid #00ff88;
         padding-bottom: 10px;
+        margin-top: 30px !important;
+        margin-bottom: 20px !important;
     }
     
     .stMarkdown h4 {
         color: #64ffda;
-        margin-top: 25px;
+        margin-top: 25px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .stMarkdown p {
+        margin: 15px 0 !important;
+    }
+    
+    .stMarkdown ul, .stMarkdown ol {
+        margin: 15px 0 !important;
+        padding-left: 20px;
+    }
+    
+    .stMarkdown li {
+        margin: 8px 0 !important;
     }
     
     .stMarkdown code {
@@ -161,6 +209,7 @@ st.markdown(
         color: #00ff88;
         padding: 2px 6px;
         border-radius: 5px;
+        margin: 0 2px;
     }
     
     .stMarkdown pre {
@@ -168,11 +217,28 @@ st.markdown(
         border: 1px solid #00ff88;
         border-radius: 10px;
         padding: 15px;
+        margin: 20px 0 !important;
     }
     
-    /* Spinner */
+    .stMarkdown hr {
+        border: 1px solid #00ff88;
+        margin: 30px 0 !important;
+    }
+    
+    /* Code block styling */
+    .stCode {
+        margin: 20px 0 !important;
+    }
+    
+    /* Column spacing */
+    .stColumn {
+        padding: 0 10px;
+    }
+    
+    /* Spinner styling */
     .stSpinner {
         color: #00ff88;
+        margin: 20px 0 !important;
     }
     
     /* Warning and error messages */
