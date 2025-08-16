@@ -76,15 +76,13 @@ PARAPHRASE_RULES = {
 }
 
 NOISE_PHRASES = [
-    "well,",
-    "you see,",
-    "actually,",
-    "to be honest,",
-    "frankly,",
-    "interestingly,",
-    "as it happens,",
-    "in fact,",
-    "let me tell you,"
+    "Additionally,",
+    "Furthermore,",
+    "Moreover,",
+    "In particular,",
+    "Notably,",
+    "Indeed,",
+    "Specifically,"
 ]
 
 # --- Synonym Replacement ---
@@ -92,17 +90,20 @@ def synonym_replace(text, intensity):
     words = text.split()
     new_words = []
     for word in words:
-        # Only replace if random threshold met and word is alphabetic
-        if random.random() < intensity and word.isalpha():
+        # Only replace if random threshold met, word is alphabetic, and longer than 4 characters
+        if random.random() < intensity and word.isalpha() and len(word) > 4:
             syns = wordnet.synsets(word)
-            lemmas = set()
+            suitable_lemmas = set()
             for syn in syns:
                 for l in syn.lemmas():
                     lemma = l.name().replace('_', ' ')
-                    if lemma.lower() != word.lower():
-                        lemmas.add(lemma)
-            if lemmas:
-                new_word = random.choice(list(lemmas))
+                    # Only use synonyms that are similar length and complexity
+                    if (lemma.lower() != word.lower() and 
+                        len(lemma) <= len(word) + 3 and 
+                        lemma.isalpha()):
+                        suitable_lemmas.add(lemma)
+            if suitable_lemmas:
+                new_word = random.choice(list(suitable_lemmas))
                 new_words.append(new_word)
             else:
                 new_words.append(word)
