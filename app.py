@@ -57,11 +57,12 @@ st.markdown(
     }
     
     /* Input styling */
-    .stTextInput {
+    .stTextInput, .stTextArea {
         margin: 20px 0 !important;
     }
     
-    .stTextInput > div > div > input {
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea {
         background: rgba(0, 20, 40, 0.9);
         border: 2px solid #00ff88;
         border-radius: 15px;
@@ -70,11 +71,42 @@ st.markdown(
         padding: 15px;
         font-family: 'Courier New', monospace;
         margin: 10px 0;
+        resize: vertical;
     }
     
-    .stTextInput > div > div > input:focus {
+    .stTextInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
         border-color: #64ffda;
         box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+        outline: none;
+    }
+    
+    /* Text area specific styling */
+    .stTextArea > div > div > textarea {
+        min-height: 120px;
+        max-height: 200px;
+        line-height: 1.5;
+        overflow-y: auto;
+        word-wrap: break-word;
+    }
+    
+    /* Custom scrollbar for text area */
+    .stTextArea > div > div > textarea::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .stTextArea > div > div > textarea::-webkit-scrollbar-track {
+        background: rgba(0, 20, 40, 0.5);
+        border-radius: 10px;
+    }
+    
+    .stTextArea > div > div > textarea::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #00ff88, #64ffda);
+        border-radius: 10px;
+    }
+    
+    .stTextArea > div > div > textarea::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #64ffda, #00ff88);
     }
     
     /* Slider styling */
@@ -345,7 +377,7 @@ col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
     st.markdown("### 🎯 Mission Control")
-    prompt = st.text_input("", placeholder="Enter your content prompt here...", key="prompt_input")
+    prompt = st.text_area("", placeholder="Enter your content prompt here...", height=120, key="prompt_input", help="Describe what you want to generate. You can write multiple lines.")
     
     st.markdown("### ⚙️ Neural Intensity")
     intensity = st.slider("Rewrite Intensity Level", 0.0, 1.0, 0.3, 0.05, help="Controls how aggressively the AI rewrites content")
