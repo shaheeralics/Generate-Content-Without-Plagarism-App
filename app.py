@@ -61,6 +61,11 @@ st.markdown(
         margin: 20px 0 !important;
     }
     
+    /* Remove any wrapper scrolling */
+    .stTextArea > div {
+        overflow: visible !important;
+    }
+    
     .stTextInput > div > div > input,
     .stTextArea > div > div > textarea {
         background: rgba(0, 20, 40, 0.9);
@@ -72,6 +77,7 @@ st.markdown(
         font-family: 'Courier New', monospace;
         margin: 10px 0;
         resize: vertical;
+        overflow: auto !important;
     }
     
     .stTextInput > div > div > input:focus,
@@ -86,11 +92,11 @@ st.markdown(
         min-height: 120px;
         max-height: 200px;
         line-height: 1.5;
-        overflow-y: auto;
         word-wrap: break-word;
+        white-space: pre-wrap;
     }
     
-    /* Custom scrollbar for text area */
+    /* Custom scrollbar for text area only */
     .stTextArea > div > div > textarea::-webkit-scrollbar {
         width: 8px;
     }
@@ -376,13 +382,13 @@ st.markdown(
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
-    st.markdown("### 🎯 Mission Control")
+    st.markdown("### Input")
     prompt = st.text_area("", placeholder="Enter your content prompt here...", height=120, key="prompt_input", help="Describe what you want to generate. You can write multiple lines.")
     
-    st.markdown("### ⚙️ Neural Intensity")
+    st.markdown("### Select Intensity")
     intensity = st.slider("Rewrite Intensity Level", 0.0, 1.0, 0.3, 0.05, help="Controls how aggressively the AI rewrites content")
     
-    st.markdown("### 🚀 Launch Sequence")
+    st.markdown("### Generate AI Free Response")
     generate_button = st.button("🔥 GENERATE & REWRITE 🔥", key="main_button")
 
 if generate_button and prompt:
