@@ -127,9 +127,7 @@ def inject_noise(text, rate=0.15):
     return ' '.join(words)
 
 # --- Streamlit UI ---
-    {prompt}
-    ```
-    "
+    # ...existing code...
 st.title("🤖 Futuristic AI Content Rewriter")
 st.markdown("""
     <div style='font-size:20px; color:#00fff7;'>
