@@ -297,7 +297,15 @@ try:
         st.stop()
     
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-pro')
+    
+    # Try different model names that are more likely to work
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+    except:
+        try:
+            model = genai.GenerativeModel('gemini-pro')
+        except:
+            model = genai.GenerativeModel('gemini-1.0-pro')
     
 except KeyError:
     st.error("⚠️ GEMINI_API_KEY not found in Streamlit secrets.")
