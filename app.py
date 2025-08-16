@@ -58,18 +58,18 @@ model = genai.GenerativeModel('gemini-2.5-pro')
 def ai_synonym_replacement(text, intensity):
     """Step 1: AI replaces words with synonyms based on intensity"""
     prompt = f"""
-    Task: Replace {int(intensity * 100)}% of important words in the following text with appropriate synonyms.
+    You are helping someone rewrite text to avoid plagiarism. Replace about {int(intensity * 100)}% of the key words with natural synonyms, but make it sound like a human wrote it, not an AI.
     
-    Rules:
-    - Only replace nouns, verbs, and adjectives
-    - Keep the exact same meaning and structure
-    - Don't change technical terms or proper nouns
-    - Don't change the length significantly
-    - Maintain professional tone
+    Important:
+    - Use everyday language, not fancy academic words
+    - Keep the same casual/formal tone as the original
+    - Don't make it sound robotic or perfect
+    - Keep all the same ideas and facts
+    - Make small, natural word choices
     
-    Original text: {text}
+    Text: {text}
     
-    Return only the text with synonyms replaced, nothing else:
+    Just give me the rewritten version:
     """
     
     try:
@@ -81,18 +81,18 @@ def ai_synonym_replacement(text, intensity):
 def ai_paraphrasing(text):
     """Step 2: AI paraphrases for better flow"""
     prompt = f"""
-    Task: Paraphrase the following text to improve flow and readability.
+    Rewrite this text so it flows better and sounds more natural, like how a real person would explain it to a friend. Don't make it sound like a robot or textbook.
     
-    Rules:
-    - Keep the exact same meaning and information
-    - Improve sentence structure and transitions
-    - Make it sound more natural and fluent
-    - Don't add or remove any facts or ideas
-    - Maintain the same length approximately
+    Keep it:
+    - Natural and conversational 
+    - Same length roughly
+    - Same information and facts
+    - Easy to read
+    - Human-like, not AI-perfect
     
-    Text to paraphrase: {text}
+    Text: {text}
     
-    Return only the paraphrased text, nothing else:
+    Just rewrite it naturally:
     """
     
     try:
@@ -104,19 +104,24 @@ def ai_paraphrasing(text):
 def ai_humanization(text):
     """Step 3: AI adds natural human-like elements"""
     prompt = f"""
-    Task: Make the following text sound more natural and human-like.
+    Make this text sound like it was written by a real human, not an AI. Add some natural imperfections and human touches.
     
-    Rules:
-    - Add appropriate transition words (furthermore, additionally, however, etc.)
-    - Vary sentence structure slightly
-    - Keep all facts and information unchanged
-    - Don't make it sound robotic or repetitive
-    - Maintain professional academic tone
-    - Only make subtle improvements
+    Add things like:
+    - Natural transitions that humans use
+    - Slight variations in sentence length
+    - More casual, conversational tone
+    - Less perfect structure
+    - Human-like explanations
     
-    Text to humanize: {text}
+    Don't:
+    - Make it sound robotic or too polished
+    - Use overly formal language
+    - Make every sentence the same length
+    - Add unnecessary complexity
     
-    Return only the humanized text, nothing else:
+    Text: {text}
+    
+    Make it sound human:
     """
     
     try:
@@ -188,7 +193,20 @@ def structure_markdown(prompt, text, intensity_value):
 if st.button("Generate & Rewrite"):
     with st.spinner("Generating content with Gemini Pro..."):
         try:
-            response = model.generate_content(prompt)
+            # Enhanced prompt for more human-like initial generation
+            enhanced_prompt = f"""
+            Write about: {prompt}
+            
+            Write this in a natural, human way - like you're explaining it to someone who's interested but not an expert. Make it informative but conversational. Don't make it sound like a robot or textbook wrote it.
+            
+            Make it:
+            - Natural and engaging
+            - Easy to understand  
+            - Well-structured but not overly formal
+            - Informative but not robotic
+            """
+            
+            response = model.generate_content(enhanced_prompt)
             ai_text = response.text.strip()
         except Exception as e:
             st.error(f"Error generating content: {e}")
