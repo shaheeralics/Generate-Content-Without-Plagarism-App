@@ -290,7 +290,7 @@ st.markdown(
 # --- Gemini API Setup ---
 api_key = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-2.5-pro')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 # --- AI-Driven Rewriting Pipeline ---
 def ai_synonym_replacement(text, intensity):
