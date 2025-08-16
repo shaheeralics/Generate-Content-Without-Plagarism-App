@@ -127,6 +127,9 @@ def inject_noise(text, rate=0.15):
     return ' '.join(words)
 
 # --- Streamlit UI ---
+    {prompt}
+    ```
+    "
 st.title("🤖 Futuristic AI Content Rewriter")
 st.markdown("""
     <div style='font-size:20px; color:#00fff7;'>
@@ -137,6 +140,22 @@ st.markdown("""
 
 prompt = st.text_input("Enter your prompt:", "How does AI impact education?")
 intensity = st.slider("Rewrite Intensity (Synonym Replacement Rate)", 0.0, 1.0, 0.3, 0.05)
+
+# --- Clean Markdown Formatting ---
+def structure_markdown(prompt, text):
+    lines = text.split('. ')
+    md = "### Original Prompt\n"
+    md += "```text\n" + str(prompt) + "\n```\n"
+    md += "---\n"
+    md += "### Rewritten Content\n"
+    for line in lines:
+        line = line.strip()
+        if line:
+            md += f"- {line}\n"
+    md += "\n---\n"
+    md += "**Summary:**\n"
+    md += "This content was generated and rewritten using AI, synonyms, paraphrasing, and human-like noise.\n"
+    return md
 
 if st.button("Generate & Rewrite"):
     with st.spinner("Generating content with Gemini Pro..."):
@@ -151,8 +170,8 @@ if st.button("Generate & Rewrite"):
             rewritten = synonym_replace(ai_text, intensity)
             rewritten = rule_paraphrase(rewritten)
             rewritten = inject_noise(rewritten, rate=0.12 + intensity/2)
-        st.markdown("## Rewritten Output (Markdown)")
-        st.markdown(rewritten, unsafe_allow_html=False)
+        structured_output = structure_markdown(prompt, rewritten)
+        st.markdown(structured_output, unsafe_allow_html=False)
         st.download_button(
             label="Download as .txt",
             data=rewritten,
