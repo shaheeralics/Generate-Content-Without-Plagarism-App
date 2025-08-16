@@ -1,13 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
-import nltk
-from nltk.corpus import wordnet
-import random
 import os
-
-# Download NLTK data if not present
-nltk.download('wordnet', quiet=True)
-nltk.download('omw-1.4', quiet=True)
 
 # --- Streamlit Page Config ---
 st.set_page_config(
@@ -61,74 +54,76 @@ api_key = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-2.5-pro')
 
-# --- Paraphrasing Rules ---
-PARAPHRASE_RULES = {
-    "due to the fact that": "because",
-    "in order to": "to",
-    "at this point in time": "now",
-    "in the event that": "if",
-    "with regard to": "about",
-    "for the purpose of": "to",
-    "in the near future": "soon",
-    "a large number of": "many",
-    "in spite of the fact that": "although",
-    "on account of": "because of"
-}
+# --- AI-Driven Rewriting Pipeline ---
+def ai_synonym_replacement(text, intensity):
+    """Step 1: AI replaces words with synonyms based on intensity"""
+    prompt = f"""
+    Task: Replace {int(intensity * 100)}% of important words in the following text with appropriate synonyms.
+    
+    Rules:
+    - Only replace nouns, verbs, and adjectives
+    - Keep the exact same meaning and structure
+    - Don't change technical terms or proper nouns
+    - Don't change the length significantly
+    - Maintain professional tone
+    
+    Original text: {text}
+    
+    Return only the text with synonyms replaced, nothing else:
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except:
+        return text
 
-NOISE_PHRASES = [
-    "Additionally,",
-    "Furthermore,",
-    "Moreover,",
-    "In particular,",
-    "Notably,",
-    "Indeed,",
-    "Specifically,"
-]
+def ai_paraphrasing(text):
+    """Step 2: AI paraphrases for better flow"""
+    prompt = f"""
+    Task: Paraphrase the following text to improve flow and readability.
+    
+    Rules:
+    - Keep the exact same meaning and information
+    - Improve sentence structure and transitions
+    - Make it sound more natural and fluent
+    - Don't add or remove any facts or ideas
+    - Maintain the same length approximately
+    
+    Text to paraphrase: {text}
+    
+    Return only the paraphrased text, nothing else:
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except:
+        return text
 
-# --- Synonym Replacement ---
-def synonym_replace(text, intensity):
-    words = text.split()
-    new_words = []
-    for word in words:
-        # Only replace if random threshold met, word is alphabetic, and longer than 4 characters
-        if random.random() < intensity and word.isalpha() and len(word) > 4:
-            syns = wordnet.synsets(word)
-            suitable_lemmas = set()
-            for syn in syns:
-                for l in syn.lemmas():
-                    lemma = l.name().replace('_', ' ')
-                    # Only use synonyms that are similar length and complexity
-                    if (lemma.lower() != word.lower() and 
-                        len(lemma) <= len(word) + 3 and 
-                        lemma.isalpha()):
-                        suitable_lemmas.add(lemma)
-            if suitable_lemmas:
-                new_word = random.choice(list(suitable_lemmas))
-                new_words.append(new_word)
-            else:
-                new_words.append(word)
-        else:
-            new_words.append(word)
-    return ' '.join(new_words)
-
-# --- Rule-based Paraphrasing ---
-def rule_paraphrase(text):
-    for phrase, replacement in PARAPHRASE_RULES.items():
-        text = text.replace(phrase, replacement)
-    return text
-
-# --- Noise Injection ---
-def inject_noise(text, rate=0.05):  # Much lower rate
-    sentences = text.split('. ')
-    new_sentences = []
-    for sentence in sentences:
-        # Only add noise to some sentences, not every few words
-        if random.random() < rate and len(sentence.split()) > 10:
-            noise = random.choice(NOISE_PHRASES)
-            new_sentences.append(f"{noise} {sentence}")
-        else:
-            new_sentences.append(sentence)
-    return '. '.join(new_sentences)
+def ai_humanization(text):
+    """Step 3: AI adds natural human-like elements"""
+    prompt = f"""
+    Task: Make the following text sound more natural and human-like.
+    
+    Rules:
+    - Add appropriate transition words (furthermore, additionally, however, etc.)
+    - Vary sentence structure slightly
+    - Keep all facts and information unchanged
+    - Don't make it sound robotic or repetitive
+    - Maintain professional academic tone
+    - Only make subtle improvements
+    
+    Text to humanize: {text}
+    
+    Return only the humanized text, nothing else:
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except:
+        return text
 
 # --- Streamlit UI ---
     # ...existing code...
@@ -199,10 +194,18 @@ if st.button("Generate & Rewrite"):
             st.error(f"Error generating content: {e}")
             ai_text = ""
     if ai_text:
-        with st.spinner("Rewriting content..."):
-            rewritten = synonym_replace(ai_text, intensity)
-            rewritten = rule_paraphrase(rewritten)
-            rewritten = inject_noise(rewritten, rate=0.03 + intensity/10)  # Much lower noise rate
+        with st.spinner("Rewriting content with AI pipeline..."):
+            # Step 1: AI Synonym Replacement
+            st.text("Step 1/3: AI Synonym Replacement...")
+            rewritten = ai_synonym_replacement(ai_text, intensity)
+            
+            # Step 2: AI Paraphrasing
+            st.text("Step 2/3: AI Paraphrasing...")
+            rewritten = ai_paraphrasing(rewritten)
+            
+            # Step 3: AI Humanization
+            st.text("Step 3/3: AI Humanization...")
+            rewritten = ai_humanization(rewritten)
         structured_output = structure_markdown(prompt, rewritten, intensity)
         st.markdown(structured_output, unsafe_allow_html=False)
         st.download_button(
