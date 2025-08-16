@@ -280,16 +280,29 @@ def ai_humanization(text):
 
 # --- Streamlit UI ---
     # ...existing code...
-st.title("🤖 Futuristic AI Content Rewriter")
-st.markdown("""
-    <div style='font-size:20px; color:#00fff7;'>
-        Generate and rewrite content with advanced AI and human-like style.<br>
-        <span style='color:#e0e0e0;'>Powered by Gemini Pro & NLP magic.</span>
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
-prompt = st.text_input("Enter your prompt:", "How does AI impact education?")
-intensity = st.slider("Rewrite Intensity (Synonym Replacement Rate)", 0.0, 1.0, 0.3, 0.05)
+# Title and header
+st.markdown(
+    """
+    <div class="neon-title">⚡ NEURALWRITE AI ⚡</div>
+    <div class="subtitle">Advanced Neural Content Rewriting System</div>
+    """, 
+    unsafe_allow_html=True
+)
+
+# Create columns for better layout
+col1, col2, col3 = st.columns([1, 2, 1])
+
+with col2:
+    st.markdown("### 🎯 Mission Control")
+    prompt = st.text_input("", placeholder="Enter your content prompt here...", key="prompt_input")
+    
+    st.markdown("### ⚙️ Neural Intensity")
+    intensity = st.slider("Rewrite Intensity Level", 0.0, 1.0, 0.3, 0.05, help="Controls how aggressively the AI rewrites content")
+    
+    st.markdown("### 🚀 Launch Sequence")
+    generate_button = st.button("🔥 GENERATE & REWRITE 🔥", key="main_button")
 
 # --- Clean Markdown Formatting ---
 def structure_markdown(prompt, text, intensity_value):
@@ -338,7 +351,7 @@ def structure_markdown(prompt, text, intensity_value):
     
     return md
 
-if st.button("Generate & Rewrite"):
+if generate_button and prompt:
     with st.spinner("Generating content with Gemini Pro..."):
         try:
             # Enhanced prompt for more human-like initial generation
@@ -360,32 +373,51 @@ if st.button("Generate & Rewrite"):
             st.error(f"Error generating content: {e}")
             ai_text = ""
     if ai_text:
-        with st.spinner("Rewriting content with AI pipeline..."):
+        with st.spinner("⚡ Initializing Neural Networks..."):
             # Step 1: AI Synonym Replacement
-            st.text("Step 1/3: AI Synonym Replacement...")
+            st.markdown('<div class="step-indicator">🧠 PHASE 1: Neural Synonym Processing...</div>', unsafe_allow_html=True)
             rewritten = ai_synonym_replacement(ai_text, intensity)
             
             # Step 2: AI Paraphrasing
-            st.text("Step 2/3: AI Paraphrasing...")
+            st.markdown('<div class="step-indicator">🔄 PHASE 2: Contextual Paraphrasing...</div>', unsafe_allow_html=True)
             rewritten = ai_paraphrasing(rewritten)
             
             # Step 3: AI Humanization
-            st.text("Step 3/3: AI Humanization...")
+            st.markdown('<div class="step-indicator">✨ PHASE 3: Human-Like Enhancement...</div>', unsafe_allow_html=True)
             rewritten = ai_humanization(rewritten)
+        st.markdown('<div class="output-container">', unsafe_allow_html=True)
         structured_output = structure_markdown(prompt, rewritten, intensity)
         st.markdown(structured_output, unsafe_allow_html=False)
-        st.download_button(
-            label="Download as .txt",
-            data=rewritten,
-            file_name="rewritten_content.txt",
-            mime="text/plain"
-        )
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Download section
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            st.download_button(
+                label="📥 DOWNLOAD CONTENT",
+                data=rewritten,
+                file_name="neuralwrite_output.txt",
+                mime="text/plain",
+                key="download_btn"
+            )
     else:
-        st.warning("No content generated. Please try again.")
+        st.markdown('<div class="step-indicator">⚠️ ERROR: Neural networks failed to generate content. Please try again.</div>', unsafe_allow_html=True)
 
-st.markdown("""
-    <hr style='border:1px solid #00fff7;'>
-    <div style='text-align:center; color:#00fff7;'>
-        <b>Made for Streamlit Cloud • {}</b>
+elif generate_button and not prompt:
+    st.markdown('<div class="step-indicator">⚠️ WARNING: Please enter a prompt to begin neural processing.</div>', unsafe_allow_html=True)
+
+# Close main container and add footer
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div class="custom-footer">
+        <div style="font-size: 16px; margin-bottom: 10px;">⚡ NEURALWRITE AI ⚡</div>
+        <div>Powered by Advanced Neural Networks | Gemini 2.5 Pro | 2025</div>
+        <div style="margin-top: 10px; font-size: 12px; opacity: 0.7;">
+            🔬 Research-Grade Content Generation | 🛡️ Privacy Protected | 🚀 Lightning Fast
+        </div>
     </div>
-    """.format(os.getenv('USER', '2025')), unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
