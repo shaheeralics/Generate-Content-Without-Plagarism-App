@@ -288,9 +288,16 @@ st.markdown(
 )
 
 # --- Gemini API Setup ---
-api_key = st.secrets["GEMINI_API_KEY"]
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-2.5-pro')
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+    if not api_key or api_key == "your-gemini-api-key-here":
+        st.error("Please set your GEMINI_API_KEY in .streamlit/secrets.toml")
+        st.stop()
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-2.5-flash')
+except Exception as e:
+    st.error(f"API Setup Error: {e}")
+    st.stop()
 
 # --- AI-Driven Rewriting Pipeline ---
 def ai_synonym_replacement(text, intensity):
