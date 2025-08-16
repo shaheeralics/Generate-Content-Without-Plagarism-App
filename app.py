@@ -289,14 +289,23 @@ st.markdown(
 
 # --- Gemini API Setup ---
 try:
+    # Get API key from Streamlit secrets (works both locally and on Streamlit Cloud)
     api_key = st.secrets["GEMINI_API_KEY"]
-    if not api_key or api_key == "your-gemini-api-key-here":
-        st.error("Please set your GEMINI_API_KEY in .streamlit/secrets.toml")
+    
+    if not api_key:
+        st.error("⚠️ API Key is empty. Please check your Streamlit secrets configuration.")
         st.stop()
+    
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-2.5-flash')
+    
+except KeyError:
+    st.error("⚠️ GEMINI_API_KEY not found in Streamlit secrets.")
+    st.info("📝 Please add GEMINI_API_KEY to your Streamlit secrets (App settings → Secrets)")
+    st.stop()
 except Exception as e:
-    st.error(f"API Setup Error: {e}")
+    st.error(f"❌ API Setup Error: {e}")
+    st.info("💡 Please verify your API key is valid and has access to Gemini models")
     st.stop()
 
 # --- AI-Driven Rewriting Pipeline ---
