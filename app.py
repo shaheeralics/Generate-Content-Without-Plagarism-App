@@ -118,14 +118,17 @@ def rule_paraphrase(text):
     return text
 
 # --- Noise Injection ---
-def inject_noise(text, rate=0.15):
-    words = text.split()
-    n = max(1, int(len(words) * rate))
-    positions = random.sample(range(len(words)), n)
-    for pos in sorted(positions, reverse=True):
-        noise = random.choice(NOISE_PHRASES)
-        words.insert(pos, noise)
-    return ' '.join(words)
+def inject_noise(text, rate=0.05):  # Much lower rate
+    sentences = text.split('. ')
+    new_sentences = []
+    for sentence in sentences:
+        # Only add noise to some sentences, not every few words
+        if random.random() < rate and len(sentence.split()) > 10:
+            noise = random.choice(NOISE_PHRASES)
+            new_sentences.append(f"{noise} {sentence}")
+        else:
+            new_sentences.append(sentence)
+    return '. '.join(new_sentences)
 
 # --- Streamlit UI ---
     # ...existing code...
