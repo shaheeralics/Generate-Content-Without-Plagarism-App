@@ -151,7 +151,8 @@ if st.button("Generate & Rewrite"):
             rewritten = synonym_replace(ai_text, intensity)
             rewritten = rule_paraphrase(rewritten)
             rewritten = inject_noise(rewritten, rate=0.12 + intensity/2)
-        st.text_area("Rewritten Output", rewritten, height=300)
+        st.markdown("## Rewritten Output (Markdown)")
+        st.markdown(rewritten, unsafe_allow_html=False)
         st.download_button(
             label="Download as .txt",
             data=rewritten,
