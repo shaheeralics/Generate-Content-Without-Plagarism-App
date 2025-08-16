@@ -297,15 +297,7 @@ try:
         st.stop()
     
     genai.configure(api_key=api_key)
-    
-    # Try different model names that are more likely to work
-    try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-    except:
-        try:
-            model = genai.GenerativeModel('gemini-pro')
-        except:
-            model = genai.GenerativeModel('gemini-1.0-pro')
+    model = genai.GenerativeModel('gemini-2.5-pro')
     
 except KeyError:
     st.error("⚠️ GEMINI_API_KEY not found in Streamlit secrets.")
@@ -431,29 +423,8 @@ if generate_button and prompt:
             - Informative but not robotic
             """
             
-            # Test the API connection with a simple prompt first
-            try:
-                test_response = model.generate_content("Hello")
-                if not test_response.text:
-                    st.error("❌ Model responded but with empty content. Please check your API key permissions.")
-                    ai_text = ""
-                else:
-                    # If test works, proceed with actual generation
-                    response = model.generate_content(enhanced_prompt)
-                    ai_text = response.text.strip()
-            except Exception as model_error:
-                st.error(f"❌ Model Error: {model_error}")
-                st.info("💡 Trying alternative model configuration...")
-                # Try with a simpler model name
-                try:
-                    backup_model = genai.GenerativeModel('gemini-pro')
-                    response = backup_model.generate_content(enhanced_prompt)
-                    ai_text = response.text.strip()
-                    st.success("✅ Using backup model: gemini-pro")
-                except Exception as backup_error:
-                    st.error(f"❌ Backup model also failed: {backup_error}")
-                    ai_text = ""
-                    
+            response = model.generate_content(enhanced_prompt)
+            ai_text = response.text.strip()
         except Exception as e:
             st.error(f"Error generating content: {e}")
             ai_text = ""
