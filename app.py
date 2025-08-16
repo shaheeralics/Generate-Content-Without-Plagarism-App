@@ -25,20 +25,6 @@ st.markdown(
         background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
         font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
         color: #00ff88;
-        padding: 20px 0;
-    }
-    
-    /* Futuristic container */
-    .main-container {
-        background: rgba(0, 0, 0, 0.8);
-        border: 2px solid #00ff88;
-        border-radius: 20px;
-        padding: 40px;
-        margin: 30px auto;
-        max-width: 1200px;
-        box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
-        backdrop-filter: blur(10px);
-        min-height: 80vh;
     }
     
     /* Neon title */
@@ -345,9 +331,6 @@ def ai_humanization(text):
         return text
 
 # --- Streamlit UI ---
-    # ...existing code...
-st.markdown('<div class="main-container">', unsafe_allow_html=True)
-
 # Title and header
 st.markdown(
     """
@@ -436,9 +419,6 @@ if generate_button and prompt:
 
 elif generate_button and not prompt:
     st.markdown('<div class="step-indicator">⚠️ WARNING: Please enter a prompt to begin neural processing.</div>', unsafe_allow_html=True)
-
-# Close main container and add footer
-st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown(
     """
