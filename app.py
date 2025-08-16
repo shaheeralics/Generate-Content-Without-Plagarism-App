@@ -4,10 +4,10 @@ import os
 
 # --- Streamlit Page Config ---
 st.set_page_config(
-    page_title="Futuristic AI Content Rewriter",
-    page_icon="🤖",
-    layout="centered",
-    initial_sidebar_state="auto"
+    page_title="NeuralWrite AI",
+    page_icon="⚡",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 # --- Futuristic CSS ---
