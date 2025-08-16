@@ -14,35 +14,183 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    body, .stApp {
-        background: linear-gradient(135deg, #0f2027, #2c5364);
-        color: #e0e0e0;
-        font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    /* Hide Streamlit elements */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .stDeployButton {display:none;}
+    
+    /* Custom background and fonts */
+    .stApp {
+        background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+        font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+        color: #00ff88;
     }
-    .stTextInput>div>div>input {
-        background: #1a2636;
-        color: #e0e0e0;
-        border-radius: 8px;
+    
+    /* Futuristic container */
+    .main-container {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #00ff88;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 20px auto;
+        max-width: 1200px;
+        box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+        backdrop-filter: blur(10px);
     }
-    .stSlider>div>div {
-        color: #00fff7;
-    }
-    .stButton>button {
-        background: linear-gradient(90deg, #00fff7 0%, #2c5364 100%);
-        color: #0f2027;
-        border-radius: 8px;
+    
+    /* Neon title */
+    .neon-title {
+        font-size: 3.5em;
+        text-align: center;
+        color: #00ff88;
+        text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 30px #00ff88;
+        margin-bottom: 10px;
         font-weight: bold;
+        letter-spacing: 3px;
     }
-    .stMarkdown, .stTextArea>div>textarea {
-        background: #1a2636;
-        color: #e0e0e0;
-        border-radius: 8px;
+    
+    .subtitle {
+        text-align: center;
+        color: #64ffda;
+        font-size: 1.3em;
+        margin-bottom: 40px;
+        opacity: 0.9;
     }
-    .stDownloadButton>button {
-        background: linear-gradient(90deg, #00fff7 0%, #2c5364 100%);
-        color: #0f2027;
-        border-radius: 8px;
+    
+    /* Input styling */
+    .stTextInput > div > div > input {
+        background: rgba(0, 20, 40, 0.9);
+        border: 2px solid #00ff88;
+        border-radius: 15px;
+        color: #00ff88;
+        font-size: 16px;
+        padding: 15px;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #64ffda;
+        box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+    }
+    
+    /* Slider styling */
+    .stSlider > div > div > div {
+        background: linear-gradient(90deg, #00ff88, #64ffda);
+    }
+    
+    .stSlider > div > div > div > div {
+        background: #00ff88;
+        border: 2px solid #64ffda;
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(45deg, #00ff88, #64ffda);
+        color: #000;
+        border: none;
+        border-radius: 25px;
+        font-size: 18px;
         font-weight: bold;
+        padding: 15px 40px;
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+        transition: all 0.3s ease;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .stButton > button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 50px rgba(0, 255, 136, 0.8);
+    }
+    
+    /* Download button */
+    .stDownloadButton > button {
+        background: linear-gradient(45deg, #ff6b6b, #feca57);
+        color: #000;
+        border: none;
+        border-radius: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px 30px;
+        box-shadow: 0 0 25px rgba(255, 107, 107, 0.5);
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Progress indicators */
+    .step-indicator {
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid #00ff88;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 10px 0;
+        color: #00ff88;
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Output container */
+    .output-container {
+        background: rgba(0, 20, 40, 0.8);
+        border: 2px solid #64ffda;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: 0 0 30px rgba(100, 255, 218, 0.2);
+    }
+    
+    /* Markdown content */
+    .stMarkdown {
+        color: #e0e0e0;
+        font-family: 'Georgia', serif;
+        line-height: 1.8;
+    }
+    
+    .stMarkdown h3 {
+        color: #00ff88;
+        text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        border-bottom: 2px solid #00ff88;
+        padding-bottom: 10px;
+    }
+    
+    .stMarkdown h4 {
+        color: #64ffda;
+        margin-top: 25px;
+    }
+    
+    .stMarkdown code {
+        background: rgba(0, 255, 136, 0.1);
+        color: #00ff88;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+    
+    .stMarkdown pre {
+        background: rgba(0, 20, 40, 0.9);
+        border: 1px solid #00ff88;
+        border-radius: 10px;
+        padding: 15px;
+    }
+    
+    /* Spinner */
+    .stSpinner {
+        color: #00ff88;
+    }
+    
+    /* Warning and error messages */
+    .stAlert {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid #ff6b6b;
+        color: #ff6b6b;
+        border-radius: 10px;
+    }
+    
+    /* Footer */
+    .custom-footer {
+        text-align: center;
+        margin-top: 50px;
+        padding: 20px;
+        color: #64ffda;
+        font-size: 14px;
+        border-top: 1px solid #00ff88;
     }
     </style>
     """,
