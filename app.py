@@ -13,19 +13,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Force sidebar to be visible
-st.markdown("""
-<script>
-setTimeout(function() {
-    const sidebar = parent.document.querySelector('[data-testid="stSidebar"]');
-    if (sidebar) {
-        sidebar.style.display = 'block';
-        sidebar.style.width = '300px';
-        sidebar.style.minWidth = '300px';
-    }
-}, 100);
-</script>
-""", unsafe_allow_html=True)
+# Developer note:
+# If the sidebar still appears collapsed in deployment:
+# 1. Ensure you're not embedding the app in an iframe that constrains width.
+# 2. Streamlit auto-collapses when viewport width < ~750px (e.g., on small mobile) – rotate or widen.
+# 3. initial_sidebar_state only applies on first load; subsequent reloads preserve user choice in browser storage.
+# 4. Avoid overriding .main margin-left while also fixing sidebar; that caused hidden chat + scroll before.
+
+# NOTE: Removed previous brittle JS that tried to force the sidebar open using a hashed CSS class.
+# We'll rely on stable data-testid selectors plus Streamlit's own layout handling.
 
 # Simple storage class
 class ChatStorage:
@@ -116,31 +112,25 @@ header {visibility: hidden;}
     background-color: #212121;
 }
 
-/* Sidebar */
-.css-1d391kg {
+/* Sidebar (use stable data-testid) */
+[data-testid="stSidebar"] {
     background-color: #171717 !important;
     padding-top: 0 !important;
-    display: block !important;
-    width: 300px !important;
-    min-width: 300px !important;
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    height: 100vh !important;
-    z-index: 999 !important;
+    width: 300px !important; /* Desired width */
 }
 
-/* Force sidebar visibility */
-.css-1d391kg[aria-expanded="false"] {
-    display: block !important;
-    transform: translateX(0) !important;
+/* Ensure sidebar content scrolls nicely */
+[data-testid="stSidebar"] .css-1lcbmhc, /* inner container (may vary) */
+[data-testid="stSidebar"] section[data-testid="stSidebarContent"] {
+    padding-top: 0 !important;
 }
 
-/* Main content adjustment */
+/* Main content adjustment: remove forced extra left margin that caused horizontal scroll */
 .main .block-container {
-    margin-left: 300px !important;
-    padding: 0 !important;
-    max-width: none !important;
+    padding-top: 0.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 1100px !important;
 }
 
 /* Sidebar content */
@@ -201,7 +191,7 @@ header {visibility: hidden;}
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: calc(100vh - 1rem);
     max-width: 768px;
     margin: 0 auto;
 }
@@ -439,9 +429,7 @@ with st.sidebar:
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Add manual sidebar toggle if needed
-if st.button("☰ Show Sidebar", key="toggle_sidebar", help="Click to show/hide sidebar"):
-    st.rerun()
+# (Removed previous manual sidebar toggle placeholder — not needed with stable layout.)
 
 # Main content
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
