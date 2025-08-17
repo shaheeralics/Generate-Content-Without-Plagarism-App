@@ -101,6 +101,19 @@ body {
     transition: all 0.3s ease !important;
 }
 
+/* Remove black background from text area container */
+.stTextArea > div > div {
+    background: transparent !important;
+}
+
+.stTextArea > div {
+    background: transparent !important;
+}
+
+.stTextArea {
+    background: transparent !important;
+}
+
 .stTextArea textarea[placeholder*="neural command"]:focus {
     border-color: #40e0d0 !important;
     box-shadow: 
@@ -152,14 +165,16 @@ body {
 
 /* Message containers */
 .user-message {
-    width: 46%;
-    max-width: none;
+    max-width: 50%;
+    min-width: 200px;
+    width: auto;
+    display: inline-block;
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
     border-radius: 15px;
     padding: 1rem 1.5rem;
     margin-bottom: 1.2rem;
-    margin-left: 52%;
+    margin-left: auto;
     margin-right: 2%;
     position: relative;
     box-sizing: border-box;
@@ -167,6 +182,8 @@ body {
         0 0 20px rgba(0, 245, 255, 0.3),
         inset 0 0 15px rgba(0, 245, 255, 0.1);
     backdrop-filter: blur(10px);
+    float: right;
+    clear: both;
 }
 
 .ai-message {
@@ -185,6 +202,7 @@ body {
         0 0 20px rgba(0, 255, 128, 0.3),
         inset 0 0 15px rgba(0, 255, 128, 0.1);
     backdrop-filter: blur(10px);
+    clear: both;
 }
 
 .user-text {
