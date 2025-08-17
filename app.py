@@ -28,17 +28,16 @@ header {visibility: hidden;}
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
+    padding: 1rem;
+    margin: 0;
 }
 
 /* Holographic title */
 .holo-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 2rem;
+    margin: 0.5rem 0 1rem 0;
     background: linear-gradient(45deg, #00f5ff, #0080ff, #8000ff, #ff0080);
     background-size: 400% 400%;
     -webkit-background-clip: text;
@@ -59,12 +58,12 @@ header {visibility: hidden;}
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
     border-radius: 20px;
-    padding: 2rem;
+    padding: 1.5rem;
     box-shadow: 
         0 0 30px rgba(0, 245, 255, 0.3),
         inset 0 0 20px rgba(0, 245, 255, 0.1);
     backdrop-filter: blur(10px);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 /* Input styling */
@@ -111,8 +110,8 @@ header {visibility: hidden;}
     background: rgba(0, 40, 20, 0.8);
     border: 2px solid #00ff80;
     border-radius: 20px;
-    padding: 2rem;
-    margin-top: 2rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
     box-shadow: 
         0 0 30px rgba(0, 255, 128, 0.3),
         inset 0 0 20px rgba(0, 255, 128, 0.1);
