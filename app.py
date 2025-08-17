@@ -214,17 +214,25 @@ st.markdown('<h1 class="holo-title">NEURAL INTERFACE</h1>', unsafe_allow_html=Tr
 
 # Display chat history
 if st.session_state.messages:
-    st.markdown('<div class="chat-history">', unsafe_allow_html=True)
     for message in st.session_state.messages:
         if message["role"] == "user":
-            st.markdown('<div class="user-message">', unsafe_allow_html=True)
-            st.markdown(f'<div class="user-text">{message["content"]}</div>', unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            # Create a container for user message
+            user_container = st.container()
+            with user_container:
+                st.markdown(f"""
+                <div class="user-message">
+                    <div class="user-text">{message["content"]}</div>
+                </div>
+                """, unsafe_allow_html=True)
         else:
-            st.markdown('<div class="ai-message">', unsafe_allow_html=True)
-            st.markdown(f'<div class="ai-text">{message["content"]}</div>', unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+            # Create a container for AI message
+            ai_container = st.container()
+            with ai_container:
+                st.markdown(f"""
+                <div class="ai-message">
+                    <div class="ai-text">{message["content"]}</div>
+                </div>
+                """, unsafe_allow_html=True)
 
 # Input container
 st.markdown('<div class="neural-input">', unsafe_allow_html=True)
