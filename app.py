@@ -79,68 +79,73 @@ body {
     50% { background-position: 100% 50%; }
 }
 
-/* Input styling for neural command input - Simple style */
+/* Clean futuristic input field */
 .stTextArea textarea[placeholder*="neural command"] {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 8px !important;
+    background: transparent !important;
+    border: 2px solid rgba(0, 245, 255, 0.6) !important;
+    border-radius: 12px !important;
     color: #ffffff !important;
     font-size: 16px !important;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-family: 'Arial', sans-serif !important;
     resize: none !important;
-    min-height: 80px !important;
-    padding: 1rem !important;
-    margin-bottom: 1rem !important;
+    min-height: 60px !important;
+    padding: 15px 20px !important;
+    margin-bottom: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
     outline: none !important;
     transition: all 0.3s ease !important;
-    box-shadow: none !important;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.2) !important;
 }
 
-/* Remove black background from text area container */
+.stTextArea textarea[placeholder*="neural command"]:focus {
+    border-color: #00f5ff !important;
+    box-shadow: 0 0 30px rgba(0, 245, 255, 0.4) !important;
+}
+
+.stTextArea textarea[placeholder*="neural command"]::placeholder {
+    color: rgba(0, 245, 255, 0.7) !important;
+    font-style: normal !important;
+}
+
+/* Clean up text area containers */
 .stTextArea > div > div {
     background: transparent !important;
+    border: none !important;
 }
 
 .stTextArea > div {
     background: transparent !important;
+    border: none !important;
 }
 
 .stTextArea {
     background: transparent !important;
+    border: none !important;
 }
 
-.stTextArea textarea[placeholder*="neural command"]:focus {
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    background: rgba(255, 255, 255, 0.98) !important;
-    color: #333333 !important;
+/* Clean futuristic button */
+.stButton > button {
+    background: linear-gradient(45deg, rgba(0, 245, 255, 0.8), rgba(0, 128, 255, 0.8)) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    color: #000000 !important;
+    padding: 12px 30px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 245, 255, 0.3) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    width: 100% !important;
+    margin-top: 15px !important;
 }
 
-.stTextArea textarea[placeholder*="neural command"]::placeholder {
-    color: rgba(255, 255, 255, 0.7) !important;
-    font-style: normal;
-}
-
-/* Quantum button */
-.quantum-btn {
-    background: linear-gradient(45deg, #00f5ff, #0080ff);
-    border: none;
-    border-radius: 50px;
-    color: #000;
-    padding: 1rem 3rem;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.quantum-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(0, 245, 255, 0.8);
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 25px rgba(0, 245, 255, 0.5) !important;
+    background: linear-gradient(45deg, #00f5ff, #0080ff) !important;
 }
 
 /* Response container */
@@ -311,15 +316,17 @@ body {
     word-wrap: break-word;
 }
 
-/* Input section at bottom */
+/* Clean input section */
 .input-section {
-    position: sticky;
+    position: fixed;
     bottom: 0;
-    background: rgba(0, 5, 15, 0.95);
-    padding: 1rem 0;
-    border-top: 1px solid rgba(0, 245, 255, 0.2);
-    backdrop-filter: blur(10px);
-    z-index: 100;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8) !important;
+    padding: 20px !important;
+    border-top: 1px solid rgba(0, 245, 255, 0.3) !important;
+    backdrop-filter: blur(15px) !important;
+    z-index: 1000 !important;
 }
 
 /* Chat messages container */
