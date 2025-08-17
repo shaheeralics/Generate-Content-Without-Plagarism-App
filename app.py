@@ -79,42 +79,34 @@ body {
     50% { background-position: 100% 50%; }
 }
 
-/* Neural input container */
-.neural-input {
-    width: 100%;
-    max-width: 800px;
-    background: rgba(0, 20, 40, 0.8);
-    border: 2px solid #00f5ff;
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 
-        0 0 30px rgba(0, 245, 255, 0.3),
-        inset 0 0 20px rgba(0, 245, 255, 0.1);
-    backdrop-filter: blur(10px);
-    margin-bottom: 1rem;
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
 /* Input styling for neural command input */
 .stTextArea textarea[placeholder*="neural command"] {
-    background: rgba(0, 20, 40, 0.8) !important;
+    background: rgba(0, 20, 40, 0.9) !important;
     border: 2px solid #00f5ff !important;
-    border-radius: 20px !important;
+    border-radius: 15px !important;
     color: #00f5ff !important;
     font-size: 18px !important;
     font-family: 'Courier New', monospace !important;
     resize: none !important;
-    min-height: 100px !important;
-    padding: 1.5rem !important;
+    min-height: 80px !important;
+    padding: 1.2rem !important;
     box-shadow: 
-        0 0 30px rgba(0, 245, 255, 0.3),
-        inset 0 0 20px rgba(0, 245, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
+        0 0 25px rgba(0, 245, 255, 0.4),
+        inset 0 0 15px rgba(0, 245, 255, 0.15) !important;
+    backdrop-filter: blur(8px) !important;
     margin-bottom: 1rem !important;
-    max-width: 800px !important;
+    max-width: 100% !important;
+    width: 100% !important;
     outline: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.stTextArea textarea[placeholder*="neural command"]:focus {
+    border-color: #40e0d0 !important;
+    box-shadow: 
+        0 0 35px rgba(64, 224, 208, 0.6),
+        inset 0 0 20px rgba(64, 224, 208, 0.2) !important;
+    background: rgba(0, 25, 45, 0.95) !important;
 }
 
 .stTextArea textarea[placeholder*="neural command"]::placeholder {
