@@ -65,13 +65,25 @@ body {
     font-size: 2.5rem;
     font-weight: bold;
     text-align: center;
-    margin: 0.5rem 0 1rem 0;
+    margin: 0.5rem 0 0.5rem 0;
     background: linear-gradient(45deg, #00f5ff, #0080ff, #8000ff, #ff0080);
     background-size: 400% 400%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: hologram 3s ease-in-out infinite;
     text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+}
+
+/* App purpose subtitle */
+.app-subtitle {
+    font-size: 1.1rem;
+    font-weight: 300;
+    text-align: center;
+    margin: 0 0 1.5rem 0;
+    color: rgba(0, 245, 255, 0.8);
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 @keyframes hologram {
@@ -334,6 +346,7 @@ body {
 .chat-messages-container {
     min-height: 60vh;
     padding-bottom: 2rem;
+    padding-top: 0.5rem;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -358,6 +371,9 @@ st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
 # Holographic title
 st.markdown('<h1 class="holo-title">NEURAL INTERFACE</h1>', unsafe_allow_html=True)
+
+# App purpose subtitle
+st.markdown('<p class="app-subtitle">Generate Plagiarism Free Content</p>', unsafe_allow_html=True)
 
 # Display chat history
 if st.session_state.messages:
