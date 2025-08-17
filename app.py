@@ -247,14 +247,7 @@ with col2:
                 except Exception as e:
                     st.session_state.messages.append({"role": "assistant", "content": f"⚠️ Neural Link Error: {str(e)}"})
             
-            # Clear input and rerun to show updated chat
-            st.session_state.neural_input = ""
+            # Rerun to show updated chat
             st.rerun()
-
-# Display response
-if st.session_state.current_response:
-    st.markdown('<div class="response-container pulse">', unsafe_allow_html=True)
-    st.markdown(f'<div class="response-text">{st.session_state.current_response}</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
