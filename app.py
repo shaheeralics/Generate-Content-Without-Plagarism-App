@@ -286,18 +286,26 @@ col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if st.button("🧠 PROCESS", key="quantum_btn", use_container_width=True):
         if user_input.strip():
-            # Add user message to history
+            # Add user message to history immediately
             st.session_state.messages.append({"role": "user", "content": user_input})
             
-            with st.spinner("🔮 Processing neural patterns..."):
-                try:
-                    response = model.generate_content(user_input)
-                    # Add AI response to history
-                    st.session_state.messages.append({"role": "assistant", "content": response.text})
-                except Exception as e:
-                    st.session_state.messages.append({"role": "assistant", "content": f"⚠️ Neural Link Error: {str(e)}"})
-            
-            # Rerun to show updated chat
+            # Clear the input by rerunning first to show user message
             st.rerun()
+
+# Generate AI response if the last message is from user and no AI response follows
+if (st.session_state.messages and 
+    st.session_state.messages[-1]["role"] == "user" and 
+    (len(st.session_state.messages) == 1 or st.session_state.messages[-2]["role"] == "assistant")):
+    
+    with st.spinner("🔮 Processing neural patterns..."):
+        try:
+            response = model.generate_content(st.session_state.messages[-1]["content"])
+            # Add AI response to history
+            st.session_state.messages.append({"role": "assistant", "content": response.text})
+        except Exception as e:
+            st.session_state.messages.append({"role": "assistant", "content": f"⚠️ Neural Link Error: {str(e)}"})
+        
+        # Rerun to show AI response
+        st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
