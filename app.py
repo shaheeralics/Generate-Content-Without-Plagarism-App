@@ -5,6 +5,9 @@ from datetime import datetime
 import json
 import os
 
+# Feature flags / config
+USE_NATIVE_SIDEBAR = False  # set True to try Streamlit's native sidebar; False uses stable two-column layout
+
 # Page configuration
 st.set_page_config(
     page_title="ChatGPT Clone",
@@ -101,6 +104,9 @@ if 'title' not in st.session_state:
 # ChatGPT-like CSS
 st.markdown("""
 <style>
+/* Global reset: remove extra padding Streamlit adds */
+.main .block-container {padding:0 !important; margin:0 !important; max-width:none !important;}
+
 /* Hide Streamlit branding (remove header space entirely) */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
@@ -113,24 +119,26 @@ header {display: none;}
 }
 
 /* Sidebar (use stable data-testid) */
+/* Native sidebar styling (only relevant if USE_NATIVE_SIDEBAR=True) */
 [data-testid="stSidebar"] {
     background-color: #171717 !important;
     padding-top: 0 !important;
-    width: 300px !important; /* Desired width */
+    width: 300px !important;
 }
-
-/* Remove any residual top spacing inside sidebar */
 [data-testid="stSidebar"] [data-testid="stVerticalBlock"],
-[data-testid="stSidebar"] .block-container, 
-[data-testid="stSidebar"] section[data-testid="stSidebarContent"] {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-}
+[data-testid="stSidebar"] .block-container,
+[data-testid="stSidebar"] section[data-testid="stSidebarContent"] {padding-top:0 !important; margin-top:0 !important;}
+[data-testid="stSidebar"] button {margin-top:0 !important;}
 
-/* Tighten button spacing */
-[data-testid="stSidebar"] button {
-    margin-top: 0 !important;
-}
+/* Custom sidebar layout (when not using native) */
+.layout-wrapper {display:flex; height:100vh; overflow:hidden; background:#212121;}
+.custom-sidebar {width:260px; background:#171717; border-right:1px solid #333; display:flex; flex-direction:column; padding:0.5rem;}
+.custom-sidebar .chat-history {flex:1; overflow-y:auto; margin-top:0.5rem;}
+.custom-sidebar button {margin-top:0;}
+.main-panel {flex:1; display:flex; flex-direction:column;}
+
+/* Scroll container for messages */
+#chatMessages {flex:1; overflow-y:auto; padding:0.5rem 1rem 2rem 1rem;}
 
 /* Ensure sidebar content scrolls nicely */
 [data-testid="stSidebar"] .css-1lcbmhc, /* inner container (may vary) */
@@ -139,12 +147,7 @@ header {display: none;}
 }
 
 /* Main content adjustment: remove forced extra left margin that caused horizontal scroll */
-.main .block-container {
-    padding-top: 0.25rem !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    max-width: 1100px !important;
-}
+/* (Retained legacy block-container override above) */
 
 /* Sidebar content */
 .sidebar-content {
@@ -201,20 +204,12 @@ header {display: none;}
 }
 
 /* Chat container */
-.chat-container {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 0.5rem);
-    max-width: 768px;
-    margin: 0 auto;
-}
+/* Legacy chat container (native/sidebar mode) */
+.chat-container {display:flex; flex-direction:column; min-height:calc(100vh - 0.5rem); max-width:768px; margin:0 auto;}
 
 /* Messages area */
-.messages-area {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.5rem 1rem 2rem 1rem;
-}
+/* Messages area (native) */
+.messages-area {flex:1; overflow-y:auto; padding:0.5rem 1rem 2rem 1rem;}
 
 /* Welcome screen */
 .welcome {
@@ -367,6 +362,32 @@ header {display: none;}
 </style>
 """, unsafe_allow_html=True)
 
+# Helper: render sidebar contents (works for native or custom column)
+def render_sidebar(target_container):
+    with target_container:
+        st.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
+        if st.button("+ New chat", key="new_chat_btn", use_container_width=True):
+            new_chat()
+            st.rerun()
+        st.markdown('<div class="chat-history">', unsafe_allow_html=True)
+        try:
+            chats = st.session_state.storage.get_chats() if st.session_state.storage else []
+        except Exception as e:
+            st.error(f"Error loading chats: {e}")
+            chats = []
+        for chat in chats[:50]:
+            title = chat["title"][:25] + "..." if len(chat["title"]) > 25 else chat["title"]
+            cols = st.columns([5,1])
+            if cols[0].button(title, key=f"chat_{chat['id']}"):
+                load_chat(chat['id'], chat['title'])
+                st.rerun()
+            if cols[1].button("🗑", key=f"del_{chat['id']}"):
+                if st.session_state.storage:
+                    st.session_state.storage.delete_chat(chat['id'])
+                st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
 # Configure AI
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
@@ -408,52 +429,24 @@ def load_chat(chat_id, title):
     st.session_state.chat_id = chat_id
     st.session_state.title = title
 
-# Sidebar
-with st.sidebar:
-    st.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
-    
-    # New chat button
-    if st.button("+ New chat", key="new_chat", use_container_width=True):
-        new_chat()
-        st.rerun()
-    
-    # Chat history
-    st.markdown('<div class="chat-history">', unsafe_allow_html=True)
-    
-    try:
-        if st.session_state.storage:
-            chats = st.session_state.storage.get_chats()
-        else:
-            chats = []
-    except Exception as e:
-        st.error(f"Error loading chats: {e}")
-        chats = []
-    
-    for chat in chats[:20]:
-        title = chat["title"][:25] + "..." if len(chat["title"]) > 25 else chat["title"]
-        
-        col1, col2 = st.columns([5, 1])
-        with col1:
-            if st.button(title, key=f"chat_{chat['id']}", use_container_width=True):
-                load_chat(chat["id"], chat["title"])
-                st.rerun()
-        with col2:
-            if st.button("🗑", key=f"del_{chat['id']}", help="Delete"):
-                if st.session_state.storage:
-                    st.session_state.storage.delete_chat(chat["id"])
-                st.rerun()
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+if USE_NATIVE_SIDEBAR:
+    # Use Streamlit native sidebar
+    render_sidebar(st.sidebar)
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+    st.markdown('<div class="messages-area" id="chatMessages">', unsafe_allow_html=True)
+else:
+    # Custom two-column layout
+    st.markdown('<div class="layout-wrapper">', unsafe_allow_html=True)
+    left, right = st.columns([260, 1], gap="small")
+    with left:
+        st.markdown('<div class="custom-sidebar">', unsafe_allow_html=True)
+        render_sidebar(st)
+        st.markdown('</div>', unsafe_allow_html=True)
+    with right:
+        st.markdown('<div class="main-panel">', unsafe_allow_html=True)
+        st.markdown('<div id="chatMessages">', unsafe_allow_html=True)
 
-# (Removed previous manual sidebar toggle placeholder — not needed with stable layout.)
-
-# Main content
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-
-# Messages area
-st.markdown('<div class="messages-area">', unsafe_allow_html=True)
-
+# Render messages
 if not st.session_state.messages:
     st.markdown("""
     <div class="welcome">
@@ -465,36 +458,35 @@ else:
     for msg in st.session_state.messages:
         role = msg["role"]
         content = msg["content"].replace("\n", "<br>")
-        
         st.markdown(f"""
         <div class="message {role}">
             <div class="message-content">{content}</div>
         </div>
         """, unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)  # close messages container
 
-# Input area
+# Input area (always below messages)
 st.markdown('<div class="input-area">', unsafe_allow_html=True)
 st.markdown('<div class="input-container">', unsafe_allow_html=True)
-
-col1, col2 = st.columns([10, 1])
-
+col1, col2 = st.columns([10,1])
 with col1:
-    user_input = st.text_area(
-        "",
-        placeholder="Message ChatGPT...",
-        key="user_input",
-        label_visibility="collapsed",
-        height=50
-    )
-
+    user_input = st.text_area("", placeholder="Message ChatGPT...", key="user_input", label_visibility="collapsed", height=50)
 with col2:
     send = st.button("↑", key="send", use_container_width=True)
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+if not USE_NATIVE_SIDEBAR:
+    st.markdown('</div>', unsafe_allow_html=True)  # close main panel
+    st.markdown('</div>', unsafe_allow_html=True)  # close layout wrapper
 
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+# Auto scroll to bottom
+st.markdown("""
+<script>
+const el = parent.document.getElementById('chatMessages');
+if (el) { el.scrollTop = el.scrollHeight; }
+</script>
+""", unsafe_allow_html=True)
 
 # Handle input
 if send and user_input.strip():
