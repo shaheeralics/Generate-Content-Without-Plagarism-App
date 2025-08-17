@@ -101,10 +101,10 @@ if 'title' not in st.session_state:
 # ChatGPT-like CSS
 st.markdown("""
 <style>
-/* Hide Streamlit branding */
+/* Hide Streamlit branding (remove header space entirely) */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
+header {display: none;}
 .stDeployButton {display: none;}
 
 /* Main container */
@@ -119,6 +119,19 @@ header {visibility: hidden;}
     width: 300px !important; /* Desired width */
 }
 
+/* Remove any residual top spacing inside sidebar */
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+[data-testid="stSidebar"] .block-container, 
+[data-testid="stSidebar"] section[data-testid="stSidebarContent"] {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Tighten button spacing */
+[data-testid="stSidebar"] button {
+    margin-top: 0 !important;
+}
+
 /* Ensure sidebar content scrolls nicely */
 [data-testid="stSidebar"] .css-1lcbmhc, /* inner container (may vary) */
 [data-testid="stSidebar"] section[data-testid="stSidebarContent"] {
@@ -127,7 +140,7 @@ header {visibility: hidden;}
 
 /* Main content adjustment: remove forced extra left margin that caused horizontal scroll */
 .main .block-container {
-    padding-top: 0.5rem !important;
+    padding-top: 0.25rem !important;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
     max-width: 1100px !important;
@@ -191,7 +204,7 @@ header {visibility: hidden;}
 .chat-container {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 1rem);
+    min-height: calc(100vh - 0.5rem);
     max-width: 768px;
     margin: 0 auto;
 }
@@ -200,8 +213,7 @@ header {visibility: hidden;}
 .messages-area {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
-    padding-bottom: 2rem;
+    padding: 0.5rem 1rem 2rem 1rem;
 }
 
 /* Welcome screen */
@@ -228,9 +240,14 @@ header {visibility: hidden;}
 
 /* Messages */
 .message {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     display: flex;
     align-items: flex-start;
+}
+
+/* First message closer to top */
+.messages-area > .message:first-child {
+    margin-top: 0.25rem;
 }
 
 .message.user {
