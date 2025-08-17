@@ -5,7 +5,7 @@ import google.generativeai as genai
 st.set_page_config(
     page_title="Neural Interface",
     page_icon="🧠",
-    layout="centered"
+    layout="wide"
 )
 
 # Hide Streamlit default elements
@@ -15,6 +15,13 @@ st.markdown("""
 footer {visibility: hidden;}
 header {visibility: hidden;}
 .stDeployButton {display: none;}
+
+/* Remove all container padding and margins */
+.main .block-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+}
 
 /* Futuristic background */
 .stApp {
@@ -30,14 +37,16 @@ header {visibility: hidden;}
     align-items: center;
     padding: 1rem 0;
     margin: 0;
-    width: 100%;
+    width: 100vw;
+    position: relative;
 }
 
 /* Chat messages full width container */
 .chat-messages-container {
     width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    padding: 0 1rem;
+    padding: 0;
+    margin: 0;
+    position: relative;
 }
 
 /* Holographic title */
@@ -128,14 +137,14 @@ header {visibility: hidden;}
 
 /* Message containers */
 .user-message {
-    width: 75%;
+    width: 75vw;
     max-width: none;
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
     border-radius: 15px;
     padding: 1rem 1.5rem;
     margin-bottom: 0.8rem;
-    margin-left: auto;
+    margin-left: 25vw;
     margin-right: 0;
     position: relative;
     box-shadow: 
@@ -145,7 +154,7 @@ header {visibility: hidden;}
 }
 
 .ai-message {
-    width: 75%;
+    width: 75vw;
     max-width: none;
     background: rgba(0, 40, 20, 0.8);
     border: 2px solid #00ff80;
@@ -153,7 +162,7 @@ header {visibility: hidden;}
     padding: 1rem 1.5rem;
     margin-bottom: 0.8rem;
     margin-left: 0;
-    margin-right: auto;
+    margin-right: 25vw;
     position: relative;
     box-shadow: 
         0 0 20px rgba(0, 255, 128, 0.3),
