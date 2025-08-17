@@ -291,12 +291,19 @@ if st.session_state.messages:
                 </div>
                 """, unsafe_allow_html=True)
         else:
-            # Create a container for AI message
+            # Create a container for AI message with markdown rendering
             ai_container = st.container()
             with ai_container:
                 st.markdown(f"""
                 <div class="ai-message">
-                    <div class="ai-text">{message["content"]}</div>
+                    <div class="ai-text">
+                """, unsafe_allow_html=True)
+                
+                # Render AI message content as markdown
+                st.markdown(message["content"])
+                
+                st.markdown("""
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -314,30 +321,47 @@ if (st.session_state.messages and
         response = model.generate_content(st.session_state.messages[-1]["content"])
         full_response = response.text
         
-        # Stream word by word
+        # Stream faster - show multiple words at once
         words = full_response.split()
         displayed_text = ""
         
-        for i, word in enumerate(words):
-            displayed_text += word + " "
+        # Stream 3-4 words at a time for faster display
+        chunk_size = 3
+        for i in range(0, len(words), chunk_size):
+            chunk = words[i:i+chunk_size]
+            displayed_text += " ".join(chunk) + " "
             
-            # Update the response container with streaming text
+            # Update the response container with streaming text and markdown rendering
             with response_placeholder.container():
                 st.markdown(f"""
                 <div class="ai-message">
-                    <div class="ai-text">{displayed_text}<span class="pulse">▊</span></div>
+                    <div class="ai-text">
+                """, unsafe_allow_html=True)
+                
+                # Render the displayed text as markdown with cursor
+                st.markdown(f"{displayed_text}<span class='pulse'>▊</span>", unsafe_allow_html=True)
+                
+                st.markdown("""
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
             
-            # Small delay for streaming effect
+            # Faster streaming - reduced delay
             import time
-            time.sleep(0.05)
+            time.sleep(0.02)
         
-        # Final update without cursor
+        # Final update without cursor - full markdown rendering
         with response_placeholder.container():
             st.markdown(f"""
             <div class="ai-message">
-                <div class="ai-text">{full_response}</div>
+                <div class="ai-text">
+            """, unsafe_allow_html=True)
+            
+            # Render final response as proper markdown
+            st.markdown(full_response)
+            
+            st.markdown("""
+                </div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -349,7 +373,14 @@ if (st.session_state.messages and
         with response_placeholder.container():
             st.markdown(f"""
             <div class="ai-message">
-                <div class="ai-text">{error_message}</div>
+                <div class="ai-text">
+            """, unsafe_allow_html=True)
+            
+            # Render error message as markdown
+            st.markdown(error_message)
+            
+            st.markdown("""
+                </div>
             </div>
             """, unsafe_allow_html=True)
         st.session_state.messages.append({"role": "assistant", "content": error_message})
