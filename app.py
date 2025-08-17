@@ -13,6 +13,20 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Force sidebar to be visible
+st.markdown("""
+<script>
+setTimeout(function() {
+    const sidebar = parent.document.querySelector('[data-testid="stSidebar"]');
+    if (sidebar) {
+        sidebar.style.display = 'block';
+        sidebar.style.width = '300px';
+        sidebar.style.minWidth = '300px';
+    }
+}, 100);
+</script>
+""", unsafe_allow_html=True)
+
 # Simple storage class
 class ChatStorage:
     def __init__(self):
@@ -106,6 +120,27 @@ header {visibility: hidden;}
 .css-1d391kg {
     background-color: #171717 !important;
     padding-top: 0 !important;
+    display: block !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    height: 100vh !important;
+    z-index: 999 !important;
+}
+
+/* Force sidebar visibility */
+.css-1d391kg[aria-expanded="false"] {
+    display: block !important;
+    transform: translateX(0) !important;
+}
+
+/* Main content adjustment */
+.main .block-container {
+    margin-left: 300px !important;
+    padding: 0 !important;
+    max-width: none !important;
 }
 
 /* Sidebar content */
@@ -160,12 +195,6 @@ header {visibility: hidden;}
 
 .chat-item:hover {
     background: #2a2a2a;
-}
-
-/* Main content area */
-.main .block-container {
-    padding: 0 !important;
-    max-width: none !important;
 }
 
 /* Chat container */
@@ -409,6 +438,10 @@ with st.sidebar:
     
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
+
+# Add manual sidebar toggle if needed
+if st.button("☰ Show Sidebar", key="toggle_sidebar", help="Click to show/hide sidebar"):
+    st.rerun()
 
 # Main content
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
