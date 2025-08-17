@@ -97,37 +97,27 @@ body {
     align-items: center;
 }
 
-/* Input styling - force the text area to be contained within the box */
-.neural-input .stTextArea {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    flex: 1;
-}
-
-.neural-input .stTextArea > div {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-}
-
-.neural-input .stTextArea textarea {
-    background: transparent !important;
-    border: none !important;
+/* Input styling for neural command input */
+.stTextArea textarea[placeholder*="neural command"] {
+    background: rgba(0, 20, 40, 0.8) !important;
+    border: 2px solid #00f5ff !important;
+    border-radius: 20px !important;
     color: #00f5ff !important;
     font-size: 18px !important;
     font-family: 'Courier New', monospace !important;
     resize: none !important;
     min-height: 100px !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    padding: 1.5rem !important;
+    box-shadow: 
+        0 0 30px rgba(0, 245, 255, 0.3),
+        inset 0 0 20px rgba(0, 245, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    margin-bottom: 1rem !important;
+    max-width: 800px !important;
     outline: none !important;
-    box-shadow: none !important;
 }
 
-.neural-input .stTextArea textarea::placeholder {
+.stTextArea textarea[placeholder*="neural command"]::placeholder {
     color: rgba(0, 245, 255, 0.5) !important;
     font-style: italic;
 }
@@ -292,36 +282,14 @@ if st.session_state.messages:
                 """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Input container - put text area INSIDE the styled div
-input_container = st.container()
-with input_container:
-    user_input = st.text_area(
-        "",
-        placeholder="⚡ Enter your neural command...",
-        label_visibility="collapsed",
-        height=100,
-        key="neural_input"
-    )
-
-# Apply neural styling to the input container
-st.markdown(f"""
-<style>
-div[data-testid="stVerticalBlock"]:has(textarea[placeholder*="neural command"]) {{
-    background: rgba(0, 20, 40, 0.8) !important;
-    border: 2px solid #00f5ff !important;
-    border-radius: 20px !important;
-    padding: 1.5rem !important;
-    box-shadow: 
-        0 0 30px rgba(0, 245, 255, 0.3),
-        inset 0 0 20px rgba(0, 245, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-    margin-bottom: 1rem !important;
-    max-width: 800px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-}}
-</style>
-""", unsafe_allow_html=True)
+# Input container - back to simple approach
+user_input = st.text_area(
+    "",
+    placeholder="⚡ Enter your neural command...",
+    label_visibility="collapsed",
+    height=100,
+    key="neural_input"
+)
 
 # Quantum process button
 col1, col2, col3 = st.columns([1, 2, 1])
