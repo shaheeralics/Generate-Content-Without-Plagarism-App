@@ -306,7 +306,7 @@ with input_container:
 # Apply neural styling to the input container
 st.markdown(f"""
 <style>
-div[data-testid="stVerticalBlock"]:has(.stTextArea) {{
+div[data-testid="stVerticalBlock"]:has(textarea[placeholder*="neural command"]) {{
     background: rgba(0, 20, 40, 0.8) !important;
     border: 2px solid #00f5ff !important;
     border-radius: 20px !important;
