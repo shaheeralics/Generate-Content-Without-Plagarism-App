@@ -203,6 +203,67 @@ body {
     font-family: 'Courier New', monospace;
     text-align: left;
     margin: 0;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+/* Ensure markdown content within AI messages stays styled */
+.ai-message .ai-text h1,
+.ai-message .ai-text h2,
+.ai-message .ai-text h3,
+.ai-message .ai-text h4,
+.ai-message .ai-text h5,
+.ai-message .ai-text h6 {
+    color: #00ff80 !important;
+    font-family: 'Courier New', monospace !important;
+    margin: 0.5rem 0 !important;
+}
+
+.ai-message .ai-text p {
+    color: #00ff80 !important;
+    font-family: 'Courier New', monospace !important;
+    margin: 0.3rem 0 !important;
+}
+
+.ai-message .ai-text ul,
+.ai-message .ai-text ol {
+    color: #00ff80 !important;
+    font-family: 'Courier New', monospace !important;
+    margin: 0.5rem 0 !important;
+    padding-left: 1.5rem !important;
+}
+
+.ai-message .ai-text li {
+    color: #00ff80 !important;
+    margin: 0.2rem 0 !important;
+}
+
+.ai-message .ai-text code {
+    background: rgba(0, 245, 255, 0.1) !important;
+    color: #40e0d0 !important;
+    padding: 0.2rem 0.4rem !important;
+    border-radius: 4px !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.ai-message .ai-text pre {
+    background: rgba(0, 245, 255, 0.1) !important;
+    color: #40e0d0 !important;
+    padding: 1rem !important;
+    border-radius: 8px !important;
+    margin: 0.5rem 0 !important;
+    overflow-x: auto !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.ai-message .ai-text strong {
+    color: #40e0d0 !important;
+    font-weight: bold !important;
+}
+
+.ai-message .ai-text em {
+    color: #60ffd0 !important;
+    font-style: italic !important;
 }
 
 /* Chat history container */
@@ -291,19 +352,12 @@ if st.session_state.messages:
                 </div>
                 """, unsafe_allow_html=True)
         else:
-            # Create a container for AI message with markdown rendering
+            # Create a container for AI message
             ai_container = st.container()
             with ai_container:
                 st.markdown(f"""
                 <div class="ai-message">
-                    <div class="ai-text">
-                """, unsafe_allow_html=True)
-                
-                # Render AI message content as markdown
-                st.markdown(message["content"])
-                
-                st.markdown("""
-                    </div>
+                    <div class="ai-text">{message["content"]}</div>
                 </div>
                 """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -335,14 +389,7 @@ if (st.session_state.messages and
             with response_placeholder.container():
                 st.markdown(f"""
                 <div class="ai-message">
-                    <div class="ai-text">
-                """, unsafe_allow_html=True)
-                
-                # Render the displayed text as markdown with cursor
-                st.markdown(f"{displayed_text}<span class='pulse'>▊</span>", unsafe_allow_html=True)
-                
-                st.markdown("""
-                    </div>
+                    <div class="ai-text">{displayed_text}<span class='pulse'>▊</span></div>
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -350,18 +397,11 @@ if (st.session_state.messages and
             import time
             time.sleep(0.02)
         
-        # Final update without cursor - full markdown rendering
+        # Final update without cursor - keep within styled container
         with response_placeholder.container():
             st.markdown(f"""
             <div class="ai-message">
-                <div class="ai-text">
-            """, unsafe_allow_html=True)
-            
-            # Render final response as proper markdown
-            st.markdown(full_response)
-            
-            st.markdown("""
-                </div>
+                <div class="ai-text">{full_response}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -373,14 +413,7 @@ if (st.session_state.messages and
         with response_placeholder.container():
             st.markdown(f"""
             <div class="ai-message">
-                <div class="ai-text">
-            """, unsafe_allow_html=True)
-            
-            # Render error message as markdown
-            st.markdown(error_message)
-            
-            st.markdown("""
-                </div>
+                <div class="ai-text">{error_message}</div>
             </div>
             """, unsafe_allow_html=True)
         st.session_state.messages.append({"role": "assistant", "content": error_message})
