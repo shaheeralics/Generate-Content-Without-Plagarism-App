@@ -236,6 +236,23 @@ body {
     line-height: 1.6;
     word-wrap: break-word;
 }
+
+/* Input section at bottom */
+.input-section {
+    position: sticky;
+    bottom: 0;
+    background: rgba(0, 5, 15, 0.95);
+    padding: 1rem 0;
+    border-top: 1px solid rgba(0, 245, 255, 0.2);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+/* Chat messages container */
+.chat-messages-container {
+    min-height: 60vh;
+    padding-bottom: 2rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -284,42 +301,10 @@ if st.session_state.messages:
                 """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Input container - back to simple approach
-user_input = st.text_area(
-    "",
-    placeholder="⚡ Enter your neural command...",
-    label_visibility="collapsed",
-    height=100,
-    key=f"neural_input_{st.session_state.input_key}"
-)
-
-# Quantum process button
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    if st.button("🧠 PROCESS", key="quantum_btn", use_container_width=True):
-        if user_input.strip():
-            # Add user message to history immediately
-            st.session_state.messages.append({"role": "user", "content": user_input})
-            
-            # Increment input key to create a new empty input field
-            st.session_state.input_key += 1
-            
-            # Rerun to show user message and clear input
-            st.rerun()
-
 # Generate AI response if the last message is from user and no AI response follows
 if (st.session_state.messages and 
     st.session_state.messages[-1]["role"] == "user" and 
     (len(st.session_state.messages) == 1 or st.session_state.messages[-2]["role"] == "assistant")):
-    
-    # Create AI response container immediately
-    ai_container = st.container()
-    with ai_container:
-        st.markdown("""
-        <div class="ai-message">
-            <div class="ai-text" id="streaming-response"></div>
-        </div>
-        """, unsafe_allow_html=True)
     
     # Create placeholder for streaming response
     response_placeholder = st.empty()
@@ -368,5 +353,36 @@ if (st.session_state.messages and
             </div>
             """, unsafe_allow_html=True)
         st.session_state.messages.append({"role": "assistant", "content": error_message})
+
+# Add some spacing before input section
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# Input section at the bottom
+st.markdown('<div class="input-section">', unsafe_allow_html=True)
+
+# Input container
+user_input = st.text_area(
+    "",
+    placeholder="⚡ Enter your neural command...",
+    label_visibility="collapsed",
+    height=100,
+    key=f"neural_input_{st.session_state.input_key}"
+)
+
+# Quantum process button
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    if st.button("🧠 PROCESS", key="quantum_btn", use_container_width=True):
+        if user_input.strip():
+            # Add user message to history immediately
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            
+            # Increment input key to create a new empty input field
+            st.session_state.input_key += 1
+            
+            # Rerun to show user message and clear input
+            st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
