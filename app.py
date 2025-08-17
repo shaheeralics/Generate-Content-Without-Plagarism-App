@@ -28,8 +28,16 @@ header {visibility: hidden;}
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1rem;
+    padding: 1rem 0;
     margin: 0;
+    width: 100%;
+}
+
+/* Chat messages full width container */
+.chat-messages-container {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 0 1rem;
 }
 
 /* Holographic title */
@@ -120,7 +128,7 @@ header {visibility: hidden;}
 
 /* Message containers */
 .user-message {
-    width: 90%;
+    width: 75%;
     max-width: none;
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
@@ -129,6 +137,7 @@ header {visibility: hidden;}
     margin-bottom: 0.8rem;
     margin-left: auto;
     margin-right: 0;
+    position: relative;
     box-shadow: 
         0 0 20px rgba(0, 245, 255, 0.3),
         inset 0 0 15px rgba(0, 245, 255, 0.1);
@@ -136,7 +145,7 @@ header {visibility: hidden;}
 }
 
 .ai-message {
-    width: 90%;
+    width: 75%;
     max-width: none;
     background: rgba(0, 40, 20, 0.8);
     border: 2px solid #00ff80;
@@ -145,6 +154,7 @@ header {visibility: hidden;}
     margin-bottom: 0.8rem;
     margin-left: 0;
     margin-right: auto;
+    position: relative;
     box-shadow: 
         0 0 20px rgba(0, 255, 128, 0.3),
         inset 0 0 15px rgba(0, 255, 128, 0.1);
@@ -216,6 +226,7 @@ st.markdown('<h1 class="holo-title">NEURAL INTERFACE</h1>', unsafe_allow_html=Tr
 
 # Display chat history
 if st.session_state.messages:
+    st.markdown('<div class="chat-messages-container">', unsafe_allow_html=True)
     for message in st.session_state.messages:
         if message["role"] == "user":
             # Create a container for user message
@@ -235,6 +246,7 @@ if st.session_state.messages:
                     <div class="ai-text">{message["content"]}</div>
                 </div>
                 """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Input container
 st.markdown('<div class="neural-input">', unsafe_allow_html=True)
