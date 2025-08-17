@@ -23,6 +23,15 @@ header {visibility: hidden;}
     max-width: none !important;
 }
 
+/* Prevent horizontal scroll */
+body {
+    overflow-x: hidden;
+}
+
+.stApp {
+    overflow-x: hidden;
+}
+
 /* Futuristic background */
 .stApp {
     background: radial-gradient(circle at 20% 50%, #120458 0%, #000000 50%, #0a0a23 100%);
@@ -137,14 +146,14 @@ header {visibility: hidden;}
 
 /* Message containers */
 .user-message {
-    width: 50vw;
+    width: calc(48vw - 2vw);
     max-width: none;
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
     border-radius: 15px;
     padding: 1rem 1.5rem;
     margin-bottom: 1.2rem;
-    margin-left: 50vw;
+    margin-left: calc(50vw + 2vw);
     margin-right: 2vw;
     position: relative;
     box-shadow: 
@@ -154,7 +163,7 @@ header {visibility: hidden;}
 }
 
 .ai-message {
-    width: 100vw;
+    width: calc(96vw);
     max-width: none;
     background: rgba(0, 40, 20, 0.8);
     border: 2px solid #00ff80;
