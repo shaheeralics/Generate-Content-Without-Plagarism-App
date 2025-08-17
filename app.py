@@ -137,15 +137,15 @@ header {visibility: hidden;}
 
 /* Message containers */
 .user-message {
-    width: 75vw;
+    width: 50vw;
     max-width: none;
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
     border-radius: 15px;
     padding: 1rem 1.5rem;
-    margin-bottom: 0.8rem;
-    margin-left: 25vw;
-    margin-right: 0;
+    margin-bottom: 1.2rem;
+    margin-left: 50vw;
+    margin-right: 2vw;
     position: relative;
     box-shadow: 
         0 0 20px rgba(0, 245, 255, 0.3),
@@ -154,16 +154,17 @@ header {visibility: hidden;}
 }
 
 .ai-message {
-    width: 75vw;
+    width: 100vw;
     max-width: none;
     background: rgba(0, 40, 20, 0.8);
     border: 2px solid #00ff80;
     border-radius: 15px;
     padding: 1rem 1.5rem;
-    margin-bottom: 0.8rem;
-    margin-left: 0;
-    margin-right: 25vw;
+    margin-bottom: 1.2rem;
+    margin-left: 2vw;
+    margin-right: 2vw;
     position: relative;
+    box-sizing: border-box;
     box-shadow: 
         0 0 20px rgba(0, 255, 128, 0.3),
         inset 0 0 15px rgba(0, 255, 128, 0.1);
