@@ -370,6 +370,9 @@ st.markdown('<p class="app-subtitle">Generate Plagiarism Free Content</p>', unsa
 
 # Display chat history only if messages exist
 if st.session_state.messages:
+    # Add some spacing between subtitle and first message
+    st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
+    
     for message in st.session_state.messages:
         if message["role"] == "user":
             # Create a container for user message
