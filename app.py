@@ -46,16 +46,18 @@ body {
     align-items: center;
     padding: 1rem 0;
     margin: 0;
-    width: 100vw;
+    width: 100%;
     position: relative;
+    box-sizing: border-box;
 }
 
 /* Chat messages full width container */
 .chat-messages-container {
-    width: 100vw;
-    padding: 0;
+    width: 100%;
+    padding: 0 2%;
     margin: 0;
     position: relative;
+    box-sizing: border-box;
 }
 
 /* Holographic title */
@@ -146,16 +148,17 @@ body {
 
 /* Message containers */
 .user-message {
-    width: calc(48vw - 2vw);
+    width: 46%;
     max-width: none;
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
     border-radius: 15px;
     padding: 1rem 1.5rem;
     margin-bottom: 1.2rem;
-    margin-left: calc(50vw + 2vw);
-    margin-right: 2vw;
+    margin-left: 52%;
+    margin-right: 2%;
     position: relative;
+    box-sizing: border-box;
     box-shadow: 
         0 0 20px rgba(0, 245, 255, 0.3),
         inset 0 0 15px rgba(0, 245, 255, 0.1);
@@ -163,15 +166,15 @@ body {
 }
 
 .ai-message {
-    width: calc(96vw);
+    width: 96%;
     max-width: none;
     background: rgba(0, 40, 20, 0.8);
     border: 2px solid #00ff80;
     border-radius: 15px;
     padding: 1rem 1.5rem;
     margin-bottom: 1.2rem;
-    margin-left: 2vw;
-    margin-right: 2vw;
+    margin-left: 2%;
+    margin-right: 2%;
     position: relative;
     box-sizing: border-box;
     box-shadow: 
