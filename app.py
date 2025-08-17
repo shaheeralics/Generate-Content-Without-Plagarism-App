@@ -120,13 +120,15 @@ header {visibility: hidden;}
 
 /* Message containers */
 .user-message {
-    width: 100%;
-    max-width: 800px;
+    width: 70%;
+    max-width: 500px;
     background: rgba(0, 20, 40, 0.8);
     border: 2px solid #00f5ff;
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: 0;
     box-shadow: 
         0 0 30px rgba(0, 245, 255, 0.3),
         inset 0 0 20px rgba(0, 245, 255, 0.1);
@@ -134,13 +136,15 @@ header {visibility: hidden;}
 }
 
 .ai-message {
-    width: 100%;
-    max-width: 800px;
+    width: 70%;
+    max-width: 500px;
     background: rgba(0, 40, 20, 0.8);
     border: 2px solid #00ff80;
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 1rem;
+    margin-left: 0;
+    margin-right: auto;
     box-shadow: 
         0 0 30px rgba(0, 255, 128, 0.3),
         inset 0 0 20px rgba(0, 255, 128, 0.1);
@@ -152,6 +156,7 @@ header {visibility: hidden;}
     font-size: 16px;
     line-height: 1.6;
     font-family: 'Courier New', monospace;
+    text-align: right;
 }
 
 .ai-text {
@@ -159,6 +164,7 @@ header {visibility: hidden;}
     font-size: 16px;
     line-height: 1.6;
     font-family: 'Courier New', monospace;
+    text-align: left;
 }
 
 /* Chat history container */
@@ -212,11 +218,11 @@ if st.session_state.messages:
     for message in st.session_state.messages:
         if message["role"] == "user":
             st.markdown('<div class="user-message">', unsafe_allow_html=True)
-            st.markdown(f'<div class="user-text">🧠 USER: {message["content"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="user-text">{message["content"]}</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
         else:
             st.markdown('<div class="ai-message">', unsafe_allow_html=True)
-            st.markdown(f'<div class="ai-text">🤖 AI: {message["content"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="ai-text">{message["content"]}</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
