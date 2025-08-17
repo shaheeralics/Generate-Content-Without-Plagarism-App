@@ -173,7 +173,7 @@ body {
     border: 2px solid #00f5ff;
     border-radius: 15px;
     padding: 1rem 1.5rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 2rem;
     margin-left: auto;
     margin-right: 2%;
     position: relative;
@@ -193,7 +193,8 @@ body {
     border: 2px solid #00ff80;
     border-radius: 15px;
     padding: 1rem 1.5rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 2.5rem;
+    margin-top: 1rem;
     margin-left: 2%;
     margin-right: 2%;
     position: relative;
