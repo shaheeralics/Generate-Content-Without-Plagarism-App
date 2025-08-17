@@ -1,48 +1,48 @@
 import streamlit as st
-import chromadb
 import json
+import os
 from datetime import datetime
 import uuid
 
 class ChatHistoryManager:
     def __init__(self):
-        self.client = chromadb.PersistentClient(path="./chat_history")
-        self.collection = self.client.get_or_create_collection(
-            name="conversations",
-            metadata={"hnsw:space": "cosine"}
-        )
+        self.history_file = "chat_history.json"
+        self.ensure_history_file()
+    
+    def ensure_history_file(self):
+        """Ensure the history file exists"""
+        if not os.path.exists(self.history_file):
+            with open(self.history_file, 'w') as f:
+                json.dump({"conversations": {}}, f)
     
     def save_conversation(self, chat_id, messages, title=None):
-        """Save a conversation to the vector database"""
+        """Save a conversation to JSON file"""
         try:
-            # Create conversation text for embedding
-            conversation_text = ""
-            for msg in messages:
-                conversation_text += f"{msg['role']}: {msg['content']}\n"
+            # Load existing data
+            with open(self.history_file, 'r') as f:
+                data = json.load(f)
             
             # Generate title if not provided
             if not title and messages:
                 title = self.generate_title(messages[0]['content'])
             
-            # Create metadata
-            metadata = {
+            # Create conversation data
+            conversation_data = {
                 "chat_id": chat_id,
                 "title": title or "Untitled Chat",
+                "messages": messages,
                 "timestamp": datetime.now().isoformat(),
                 "message_count": len(messages),
                 "created_date": datetime.now().strftime("%Y-%m-%d"),
                 "created_time": datetime.now().strftime("%H:%M")
             }
             
-            # Convert messages to JSON string for storage
-            messages_json = json.dumps(messages)
+            # Save conversation
+            data["conversations"][chat_id] = conversation_data
             
-            # Save to vector database
-            self.collection.upsert(
-                documents=[conversation_text],
-                metadatas=[metadata],
-                ids=[chat_id]
-            )
+            # Write back to file
+            with open(self.history_file, 'w') as f:
+                json.dump(data, f, indent=2)
             
             return True
         except Exception as e:
@@ -52,18 +52,17 @@ class ChatHistoryManager:
     def load_conversation(self, chat_id):
         """Load a conversation by chat_id"""
         try:
-            results = self.collection.get(ids=[chat_id])
-            if results['ids']:
-                # Extract messages from document
-                document = results['documents'][0]
-                messages = []
-                for line in document.split('\n'):
-                    if line.strip():
-                        if line.startswith('user: '):
-                            messages.append({"role": "user", "content": line[6:]})
-                        elif line.startswith('assistant: '):
-                            messages.append({"role": "assistant", "content": line[11:]})
-                return messages, results['metadatas'][0]
+            with open(self.history_file, 'r') as f:
+                data = json.load(f)
+            
+            if chat_id in data["conversations"]:
+                conv_data = data["conversations"][chat_id]
+                return conv_data["messages"], {
+                    "title": conv_data.get("title", "Untitled"),
+                    "timestamp": conv_data.get("timestamp", ""),
+                    "created_date": conv_data.get("created_date", ""),
+                    "created_time": conv_data.get("created_time", "")
+                }
             return None, None
         except Exception as e:
             st.error(f"Error loading conversation: {e}")
@@ -72,17 +71,18 @@ class ChatHistoryManager:
     def get_all_conversations(self):
         """Get all conversations metadata"""
         try:
-            results = self.collection.get()
+            with open(self.history_file, 'r') as f:
+                data = json.load(f)
+            
             conversations = []
-            for i, chat_id in enumerate(results['ids']):
-                metadata = results['metadatas'][i]
+            for chat_id, conv_data in data["conversations"].items():
                 conversations.append({
                     'chat_id': chat_id,
-                    'title': metadata.get('title', 'Untitled'),
-                    'timestamp': metadata.get('timestamp', ''),
-                    'message_count': metadata.get('message_count', 0),
-                    'date': metadata.get('created_date', ''),
-                    'time': metadata.get('created_time', '')
+                    'title': conv_data.get('title', 'Untitled'),
+                    'timestamp': conv_data.get('timestamp', ''),
+                    'message_count': conv_data.get('message_count', 0),
+                    'date': conv_data.get('created_date', ''),
+                    'time': conv_data.get('created_time', '')
                 })
             
             # Sort by timestamp (newest first)
@@ -95,8 +95,16 @@ class ChatHistoryManager:
     def delete_conversation(self, chat_id):
         """Delete a conversation"""
         try:
-            self.collection.delete(ids=[chat_id])
-            return True
+            with open(self.history_file, 'r') as f:
+                data = json.load(f)
+            
+            if chat_id in data["conversations"]:
+                del data["conversations"][chat_id]
+                
+                with open(self.history_file, 'w') as f:
+                    json.dump(data, f, indent=2)
+                return True
+            return False
         except Exception as e:
             st.error(f"Error deleting conversation: {e}")
             return False
@@ -104,24 +112,35 @@ class ChatHistoryManager:
     def search_conversations(self, query, n_results=10):
         """Search conversations by content"""
         try:
-            results = self.collection.query(
-                query_texts=[query],
-                n_results=n_results
-            )
+            with open(self.history_file, 'r') as f:
+                data = json.load(f)
             
             conversations = []
-            for i, chat_id in enumerate(results['ids'][0]):
-                metadata = results['metadatas'][0][i]
-                conversations.append({
-                    'chat_id': chat_id,
-                    'title': metadata.get('title', 'Untitled'),
-                    'timestamp': metadata.get('timestamp', ''),
-                    'relevance': results['distances'][0][i],
-                    'date': metadata.get('created_date', ''),
-                    'time': metadata.get('created_time', '')
-                })
+            query_lower = query.lower()
             
-            return conversations
+            for chat_id, conv_data in data["conversations"].items():
+                # Search in title and messages
+                title_match = query_lower in conv_data.get('title', '').lower()
+                
+                message_match = False
+                for msg in conv_data.get('messages', []):
+                    if query_lower in msg.get('content', '').lower():
+                        message_match = True
+                        break
+                
+                if title_match or message_match:
+                    conversations.append({
+                        'chat_id': chat_id,
+                        'title': conv_data.get('title', 'Untitled'),
+                        'timestamp': conv_data.get('timestamp', ''),
+                        'message_count': conv_data.get('message_count', 0),
+                        'date': conv_data.get('created_date', ''),
+                        'time': conv_data.get('created_time', '')
+                    })
+            
+            # Sort by timestamp and limit results
+            conversations.sort(key=lambda x: x['timestamp'], reverse=True)
+            return conversations[:n_results]
         except Exception as e:
             st.error(f"Error searching conversations: {e}")
             return []
