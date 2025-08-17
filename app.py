@@ -44,7 +44,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1rem 0;
+    padding: 1rem 0 0 0;
     margin: 0;
     width: 100%;
     position: relative;
@@ -341,13 +341,6 @@ body {
     backdrop-filter: blur(15px) !important;
     z-index: 1000 !important;
 }
-
-/* Chat messages container */
-.chat-messages-container {
-    min-height: 60vh;
-    padding-bottom: 2rem;
-    padding-top: 0.5rem;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -375,9 +368,8 @@ st.markdown('<h1 class="holo-title">NEURAL INTERFACE</h1>', unsafe_allow_html=Tr
 # App purpose subtitle
 st.markdown('<p class="app-subtitle">Generate Plagiarism Free Content</p>', unsafe_allow_html=True)
 
-# Display chat history
+# Display chat history only if messages exist
 if st.session_state.messages:
-    st.markdown('<div class="chat-messages-container">', unsafe_allow_html=True)
     for message in st.session_state.messages:
         if message["role"] == "user":
             # Create a container for user message
@@ -397,7 +389,6 @@ if st.session_state.messages:
                     <div class="ai-text">{message["content"]}</div>
                 </div>
                 """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # Generate AI response if the last message is from user and no AI response follows
 if (st.session_state.messages and 
