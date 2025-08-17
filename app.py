@@ -93,6 +93,18 @@ if 'chat_title' not in st.session_state:
 if 'storage' not in st.session_state:
     st.session_state.storage = SimpleStorage()
 
+# Force sidebar to be visible with a simple toggle
+st.markdown("""
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = parent.document.querySelector('[data-testid="stSidebar"]');
+    if (sidebar && sidebar.style.display === 'none') {
+        sidebar.style.display = 'block';
+    }
+});
+</script>
+""", unsafe_allow_html=True)
+
 # Clean ChatGPT-like CSS
 st.markdown("""
 <style>
@@ -102,10 +114,48 @@ st.markdown("""
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
+    /* Add sidebar toggle button */
+    .sidebar-toggle {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 999;
+        background: #10a37f;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem;
+        cursor: pointer;
+        font-size: 1.2rem;
+        display: none;
+    }
+    
+    .sidebar-toggle:hover {
+        background: #0d8c6f;
+    }
+    
+    /* Show toggle button when sidebar is hidden */
+    .css-1d391kg[aria-expanded="false"] ~ .main .sidebar-toggle {
+        display: block;
+    }
+    
+    /* Force sidebar to be accessible */
+    .css-1d391kg {
+        min-width: 250px !important;
+    }
+    
     /* Main layout */
     .main {
         background-color: #212121;
         color: #ffffff;
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Remove any top margins/padding from Streamlit */
+    .block-container {
+        padding-top: 1rem !important;
+        margin-top: 0 !important;
     }
     
     /* Sidebar styling */
@@ -119,30 +169,31 @@ st.markdown("""
     .chat-container {
         max-width: 700px;
         margin: 0 auto;
-        padding: 1rem;
-        min-height: calc(100vh - 120px);
+        padding: 0.5rem 1rem;
+        min-height: calc(100vh - 80px);
         padding-bottom: 120px;
+        padding-top: 0;
     }
     
     /* Welcome screen */
     .welcome {
         text-align: center;
-        padding: 2rem 1rem;
+        padding: 1rem;
         color: #ececf1;
-        margin-top: 2rem;
+        margin-top: 1rem;
     }
     
     .welcome h1 {
         font-size: 2rem;
         font-weight: 600;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         color: #ffffff;
     }
     
     .welcome p {
         font-size: 1rem;
         opacity: 0.8;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
     
     /* Message styling */
@@ -150,7 +201,7 @@ st.markdown("""
         background: #343541;
         border-radius: 12px;
         padding: 1rem 1.5rem;
-        margin: 1rem 0;
+        margin: 0.5rem 0;
         margin-left: 20%;
         border: 1px solid #444654;
     }
@@ -159,7 +210,7 @@ st.markdown("""
         background: #444654;
         border-radius: 12px;
         padding: 1rem 1.5rem;
-        margin: 1rem 0;
+        margin: 0.5rem 0;
         margin-right: 20%;
         border: 1px solid #565869;
     }
@@ -383,6 +434,12 @@ with st.sidebar:
                 st.rerun()
 
 # Main chat area
+# Simple approach - just show a button to refresh if sidebar is hidden
+col1, col2 = st.columns([1, 10])
+with col1:
+    if st.button("☰", help="Toggle sidebar", key="menu_btn"):
+        st.rerun()
+
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
 # Welcome screen or messages
