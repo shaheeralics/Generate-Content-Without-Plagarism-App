@@ -219,14 +219,22 @@ body {
     font-family: 'Courier New', monospace;
 }
 
-/* Pulse animation */
+/* Pulse animation for streaming cursor */
 @keyframes pulse {
-    0%, 100% { opacity: 0.7; }
+    0%, 100% { opacity: 0.3; }
     50% { opacity: 1; }
 }
 
 .pulse {
-    animation: pulse 2s infinite;
+    animation: pulse 1s infinite;
+    color: #00f5ff;
+    font-weight: bold;
+}
+
+/* Streaming text effect */
+.ai-text {
+    line-height: 1.6;
+    word-wrap: break-word;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -291,7 +299,10 @@ with col2:
             # Add user message to history immediately
             st.session_state.messages.append({"role": "user", "content": user_input})
             
-            # Clear the input by rerunning first to show user message
+            # Clear the input field by setting it to empty
+            st.session_state.neural_input = ""
+            
+            # Rerun to show user message and clear input
             st.rerun()
 
 # Generate AI response if the last message is from user and no AI response follows
@@ -299,15 +310,61 @@ if (st.session_state.messages and
     st.session_state.messages[-1]["role"] == "user" and 
     (len(st.session_state.messages) == 1 or st.session_state.messages[-2]["role"] == "assistant")):
     
-    with st.spinner("🔮 Processing neural patterns..."):
-        try:
-            response = model.generate_content(st.session_state.messages[-1]["content"])
-            # Add AI response to history
-            st.session_state.messages.append({"role": "assistant", "content": response.text})
-        except Exception as e:
-            st.session_state.messages.append({"role": "assistant", "content": f"⚠️ Neural Link Error: {str(e)}"})
+    # Create AI response container immediately
+    ai_container = st.container()
+    with ai_container:
+        st.markdown("""
+        <div class="ai-message">
+            <div class="ai-text" id="streaming-response"></div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Create placeholder for streaming response
+    response_placeholder = st.empty()
+    
+    try:
+        # Generate the complete response
+        response = model.generate_content(st.session_state.messages[-1]["content"])
+        full_response = response.text
         
-        # Rerun to show AI response
-        st.rerun()
+        # Stream word by word
+        words = full_response.split()
+        displayed_text = ""
+        
+        for i, word in enumerate(words):
+            displayed_text += word + " "
+            
+            # Update the response container with streaming text
+            with response_placeholder.container():
+                st.markdown(f"""
+                <div class="ai-message">
+                    <div class="ai-text">{displayed_text}<span class="pulse">▊</span></div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Small delay for streaming effect
+            import time
+            time.sleep(0.05)
+        
+        # Final update without cursor
+        with response_placeholder.container():
+            st.markdown(f"""
+            <div class="ai-message">
+                <div class="ai-text">{full_response}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Add complete AI response to history
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
+        
+    except Exception as e:
+        error_message = f"⚠️ Neural Link Error: {str(e)}"
+        with response_placeholder.container():
+            st.markdown(f"""
+            <div class="ai-message">
+                <div class="ai-text">{error_message}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        st.session_state.messages.append({"role": "assistant", "content": error_message})
 
 st.markdown('</div>', unsafe_allow_html=True)
