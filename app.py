@@ -119,28 +119,30 @@ st.markdown("""
     .chat-container {
         max-width: 700px;
         margin: 0 auto;
-        padding: 2rem 1rem;
+        padding: 1rem;
         min-height: calc(100vh - 120px);
+        padding-bottom: 120px;
     }
     
     /* Welcome screen */
     .welcome {
         text-align: center;
-        padding: 4rem 2rem;
+        padding: 2rem 1rem;
         color: #ececf1;
+        margin-top: 2rem;
     }
     
     .welcome h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 600;
         margin-bottom: 1rem;
         color: #ffffff;
     }
     
     .welcome p {
-        font-size: 1.1rem;
+        font-size: 1rem;
         opacity: 0.8;
-        margin-bottom: 3rem;
+        margin-bottom: 1rem;
     }
     
     /* Message styling */
@@ -148,7 +150,7 @@ st.markdown("""
         background: #343541;
         border-radius: 12px;
         padding: 1rem 1.5rem;
-        margin: 1.5rem 0;
+        margin: 1rem 0;
         margin-left: 20%;
         border: 1px solid #444654;
     }
@@ -157,7 +159,7 @@ st.markdown("""
         background: #444654;
         border-radius: 12px;
         padding: 1rem 1.5rem;
-        margin: 1.5rem 0;
+        margin: 1rem 0;
         margin-right: 20%;
         border: 1px solid #565869;
     }
@@ -234,24 +236,25 @@ st.markdown("""
     /* Sidebar chat items */
     .sidebar-header {
         padding: 1rem;
-        border-bottom: 1px solid #444654;
         margin-bottom: 1rem;
     }
     
-    .new-chat-btn {
-        background: #10a37f;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 0.7rem 1rem;
-        width: 100%;
-        font-weight: 500;
-        cursor: pointer;
-        margin-bottom: 1rem;
+    .stButton > button[kind="primary"] {
+        background: #10a37f !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.75rem 1rem !important;
+        width: 100% !important;
+        font-weight: 500 !important;
+        font-size: 0.9rem !important;
+        text-align: center !important;
+        cursor: pointer !important;
+        margin-bottom: 1rem !important;
     }
     
-    .new-chat-btn:hover {
-        background: #0d8c6f;
+    .stButton > button[kind="primary"]:hover {
+        background: #0d8c6f !important;
     }
     
     .chat-item {
@@ -259,13 +262,16 @@ st.markdown("""
         border: none;
         color: #ececf1;
         padding: 0.75rem 1rem;
-        margin: 0.25rem 0;
-        border-radius: 6px;
+        margin: 0.2rem 0;
+        border-radius: 8px;
         width: 100%;
         text-align: left;
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         transition: background 0.2s;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     
     .chat-item:hover {
@@ -348,17 +354,21 @@ def load_chat(chat_id, title):
 with st.sidebar:
     st.markdown('<div class="sidebar-header">', unsafe_allow_html=True)
     
-    if st.button("+ New Chat", key="new_chat", use_container_width=True):
+    # New Chat button with proper styling
+    if st.button("+ New Chat", key="new_chat", type="primary", use_container_width=True):
         new_chat()
         st.rerun()
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # Chat history
+    # Chat history section
+    if len(st.session_state.storage.get_all_chats()) > 0:
+        st.markdown("**Recent Chats**")
+    
     chats = st.session_state.storage.get_all_chats()
     
     for chat in chats[:15]:  # Show last 15 chats
-        chat_title = chat["title"][:30] + "..." if len(chat["title"]) > 30 else chat["title"]
+        chat_title = chat["title"][:25] + "..." if len(chat["title"]) > 25 else chat["title"]
         
         col1, col2 = st.columns([4, 1])
         
@@ -384,8 +394,8 @@ if not st.session_state.messages:
     </div>
     """, unsafe_allow_html=True)
 else:
-    # Display messages
-    for message in st.session_state.messages:
+    # Display messages starting from the top
+    for i, message in enumerate(st.session_state.messages):
         if message["role"] == "user":
             st.markdown(f"""
             <div class="user-msg">
