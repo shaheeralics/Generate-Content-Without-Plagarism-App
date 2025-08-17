@@ -93,17 +93,23 @@ body {
     backdrop-filter: blur(10px);
     margin-bottom: 1rem;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
-/* Input styling */
+/* Input styling - force the text area to be contained within the box */
 .neural-input .stTextArea {
     margin: 0 !important;
     padding: 0 !important;
+    width: 100% !important;
+    flex: 1;
 }
 
 .neural-input .stTextArea > div {
     margin: 0 !important;
     padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
 }
 
 .neural-input .stTextArea textarea {
