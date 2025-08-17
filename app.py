@@ -292,16 +292,36 @@ if st.session_state.messages:
                 """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Input container
-st.markdown('<div class="neural-input">', unsafe_allow_html=True)
-user_input = st.text_area(
-    "",
-    placeholder="⚡ Enter your neural command...",
-    label_visibility="collapsed",
-    height=100,
-    key="neural_input"
-)
-st.markdown('</div>', unsafe_allow_html=True)
+# Input container - put text area INSIDE the styled div
+input_container = st.container()
+with input_container:
+    user_input = st.text_area(
+        "",
+        placeholder="⚡ Enter your neural command...",
+        label_visibility="collapsed",
+        height=100,
+        key="neural_input"
+    )
+
+# Apply neural styling to the input container
+st.markdown(f"""
+<style>
+div[data-testid="stVerticalBlock"]:has(.stTextArea) {{
+    background: rgba(0, 20, 40, 0.8) !important;
+    border: 2px solid #00f5ff !important;
+    border-radius: 20px !important;
+    padding: 1.5rem !important;
+    box-shadow: 
+        0 0 30px rgba(0, 245, 255, 0.3),
+        inset 0 0 20px rgba(0, 245, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    margin-bottom: 1rem !important;
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}}
+</style>
+""", unsafe_allow_html=True)
 
 # Quantum process button
 col1, col2, col3 = st.columns([1, 2, 1])
