@@ -92,10 +92,21 @@ body {
         inset 0 0 20px rgba(0, 245, 255, 0.1);
     backdrop-filter: blur(10px);
     margin-bottom: 1rem;
+    position: relative;
 }
 
 /* Input styling */
-.stTextArea textarea {
+.neural-input .stTextArea {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.neural-input .stTextArea > div {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.neural-input .stTextArea textarea {
     background: transparent !important;
     border: none !important;
     color: #00f5ff !important;
@@ -103,9 +114,14 @@ body {
     font-family: 'Courier New', monospace !important;
     resize: none !important;
     min-height: 100px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
-.stTextArea textarea::placeholder {
+.neural-input .stTextArea textarea::placeholder {
     color: rgba(0, 245, 255, 0.5) !important;
     font-style: italic;
 }
