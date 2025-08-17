@@ -75,7 +75,12 @@ class ChatStorage:
 
 # Initialize session
 if 'storage' not in st.session_state:
-    st.session_state.storage = ChatStorage()
+    try:
+        st.session_state.storage = ChatStorage()
+    except Exception as e:
+        st.error(f"Error initializing storage: {e}")
+        st.session_state.storage = None
+
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 if 'chat_id' not in st.session_state:
@@ -343,7 +348,7 @@ def generate_response(prompt):
         return f"Sorry, I encountered an error: {str(e)}"
 
 def new_chat():
-    if st.session_state.messages:
+    if st.session_state.messages and st.session_state.storage:
         st.session_state.storage.save_chat(
             st.session_state.chat_id,
             st.session_state.messages,
@@ -354,13 +359,16 @@ def new_chat():
     st.session_state.title = "New chat"
 
 def load_chat(chat_id, title):
-    if st.session_state.messages:
+    if st.session_state.messages and st.session_state.storage:
         st.session_state.storage.save_chat(
             st.session_state.chat_id,
             st.session_state.messages,
             st.session_state.title
         )
-    st.session_state.messages = st.session_state.storage.load_chat(chat_id)
+    if st.session_state.storage:
+        st.session_state.messages = st.session_state.storage.load_chat(chat_id)
+    else:
+        st.session_state.messages = []
     st.session_state.chat_id = chat_id
     st.session_state.title = title
 
@@ -375,7 +383,15 @@ with st.sidebar:
     
     # Chat history
     st.markdown('<div class="chat-history">', unsafe_allow_html=True)
-    chats = st.session_state.storage.get_chats()
+    
+    try:
+        if st.session_state.storage:
+            chats = st.session_state.storage.get_chats()
+        else:
+            chats = []
+    except Exception as e:
+        st.error(f"Error loading chats: {e}")
+        chats = []
     
     for chat in chats[:20]:
         title = chat["title"][:25] + "..." if len(chat["title"]) > 25 else chat["title"]
@@ -387,7 +403,8 @@ with st.sidebar:
                 st.rerun()
         with col2:
             if st.button("🗑", key=f"del_{chat['id']}", help="Delete"):
-                st.session_state.storage.delete_chat(chat["id"])
+                if st.session_state.storage:
+                    st.session_state.storage.delete_chat(chat["id"])
                 st.rerun()
     
     st.markdown('</div>', unsafe_allow_html=True)
@@ -456,7 +473,7 @@ if send and user_input.strip():
         st.session_state.messages.append({"role": "assistant", "content": response})
     
     # Auto-save
-    if len(st.session_state.messages) % 4 == 0:
+    if len(st.session_state.messages) % 4 == 0 and st.session_state.storage:
         st.session_state.storage.save_chat(
             st.session_state.chat_id,
             st.session_state.messages,
@@ -467,7 +484,7 @@ if send and user_input.strip():
     st.rerun()
 
 # Save on exit
-if st.session_state.messages:
+if st.session_state.messages and st.session_state.storage:
     st.session_state.storage.save_chat(
         st.session_state.chat_id,
         st.session_state.messages,
