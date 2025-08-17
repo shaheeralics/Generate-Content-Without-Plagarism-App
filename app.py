@@ -251,6 +251,8 @@ except:
 # Initialize session state
 if 'messages' not in st.session_state:
     st.session_state.messages = []
+if 'input_key' not in st.session_state:
+    st.session_state.input_key = 0
 
 # Main interface
 st.markdown('<div class="main-container">', unsafe_allow_html=True)
@@ -288,7 +290,7 @@ user_input = st.text_area(
     placeholder="⚡ Enter your neural command...",
     label_visibility="collapsed",
     height=100,
-    key="neural_input"
+    key=f"neural_input_{st.session_state.input_key}"
 )
 
 # Quantum process button
@@ -299,8 +301,8 @@ with col2:
             # Add user message to history immediately
             st.session_state.messages.append({"role": "user", "content": user_input})
             
-            # Clear the input field by setting it to empty
-            st.session_state.neural_input = ""
+            # Increment input key to create a new empty input field
+            st.session_state.input_key += 1
             
             # Rerun to show user message and clear input
             st.rerun()
